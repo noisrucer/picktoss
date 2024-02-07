@@ -1,8 +1,9 @@
 
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import BigInteger, String, ForeignKey, Enum
 from reminder.core.database.session_manager import Base
 from reminder.domain.document.enum import DocumentStatus, DocumentFormat
+from reminder.domain.question_set.model import QuestionSet
 
 
 class Document(Base):
@@ -12,3 +13,8 @@ class Document(Base):
     format: Mapped[str] = mapped_column(Enum(DocumentFormat), nullable=False) 
     s3_key: Mapped[str] = mapped_column(String(500), nullable=False)
     status: Mapped[str] = mapped_column(Enum(DocumentStatus), nullable=False)
+
+    question_sets: Mapped[list[QuestionSet]] = relationship("QuestionSet", back_populates="document", cascade="all, delete-orphan")
+
+    def complete_process(self):
+        self.status = DocumentStatus.PROCESSED

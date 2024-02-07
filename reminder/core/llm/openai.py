@@ -2,7 +2,7 @@ from dataclasses import dataclass, asdict
 from typing import Literal
 import json
 
-from openai import AsyncOpenAI
+from openai import AsyncOpenAI, OpenAI
 from reminder.config import load_config
 
 cfg = load_config()
@@ -20,7 +20,8 @@ class OpenAIChatLLM:
         model: str = "gpt-3.5-turbo",
         temperature: float = 0.0
     ):
-        self.client = AsyncOpenAI(api_key=api_key)
+        self.async_client = AsyncOpenAI(api_key=api_key)
+        self.sync_client = OpenAI(api_key=api_key)
 
         self.model_kwargs = {
             'model': model,
@@ -32,7 +33,19 @@ class OpenAIChatLLM:
         if self.model_kwargs['model'] == 'gpt-3.5-turbo':
             extra_params['response_format'] = {'type': 'json_object'}
         
-        resp = await self.client.chat.completions.create(
+        resp = await self.async_client.chat.completions.create(
+            messages=[asdict(message) for message in messages], **self.model_kwargs
+        )
+        resp_content = resp.choices[0].message.content
+        resp_content = self.response_to_dict(text=resp_content)
+        return resp_content
+    
+    def predict_json(self, messages: list[ChatMessage]) -> dict:
+        extra_params = {}
+        if self.model_kwargs['model'] == 'gpt-3.5-turbo':
+            extra_params['response_format'] = {'type': 'json_object'}
+        
+        resp = self.sync_client.chat.completions.create(
             messages=[asdict(message) for message in messages], **self.model_kwargs
         )
         resp_content = resp.choices[0].message.content

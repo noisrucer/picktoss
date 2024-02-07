@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from reminder.domain.document.enum import DocumentStatus, DocumentFormat
 
+
 @dataclass
 class EDocument:
     content_bytes: bytes
@@ -15,9 +16,3 @@ class EDocument:
     
     def assign_s3_key(self, s3_key: str) -> None:
         self.s3_key = s3_key
-
-
-@dataclass
-class QuestionSet:
-    question: str
-    answer: str

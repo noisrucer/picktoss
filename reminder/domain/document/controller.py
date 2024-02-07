@@ -3,7 +3,7 @@ from reminder.domain.document.request.upload_document_request import UploadDocum
 from reminder.domain.document.entity import EDocument
 from reminder.domain.document.dependency import document_service
 from reminder.dependency.db import DBSessionDep
-
+from reminder.worker.question_generation.worker import handler
 router = APIRouter(tags=["post"])
 
 
