@@ -1,7 +1,5 @@
 from abc import ABC
 
-from fastapi import status
-
 
 class BaseCustomException(ABC, Exception):
     status_code: int

@@ -1,13 +1,13 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-from contextlib import asynccontextmanager
 
+from reminder.core.database.session_manager import Base, sessionmanager
 from reminder.core.exception.base import BaseCustomException
-from reminder.domain.document.model import Document
-from reminder.domain.question_set.model import QuestionSet
-from reminder.core.database.session_manager import sessionmanager, Base
 from reminder.domain.document.controller import router as post_router
+
 
 def init_exception_handlers(app: FastAPI) -> None:
     """Initialize exception handlers."""
@@ -53,12 +53,7 @@ def create_app() -> FastAPI:
         if sessionmanager._engine is not None:
             await sessionmanager.close()
 
-    app = FastAPI(
-        title="peerloop server",
-        description="peerloop server",
-        version="0.1.0",
-        lifespan=lifespan
-    )
+    app = FastAPI(title="peerloop server", description="peerloop server", version="0.1.0", lifespan=lifespan)
 
     init_exception_handlers(app)
     init_routers(app)

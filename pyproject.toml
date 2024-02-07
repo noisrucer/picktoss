@@ -18,6 +18,32 @@ boto3 = "^1.34.36"
 pymysql = "^1.1.0"
 
 
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.2.1"
+black = "^24.1.1"
+isort = "^5.13.2"
+
+[tool.ruff]
+line-length = 120
+select = [
+  "E",   # pycodestyle
+  "F",   # pyflakes
+  "UP",  # pyupgrade
+]
+target-version = "py311"
+
+[tool.black]
+line-length = 120
+target-version = ["py311"]
+
+[tool.isort]
+profile = "black"
+
+[tool.mypy]
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+python_version = "3.11"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

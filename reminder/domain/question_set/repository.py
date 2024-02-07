@@ -1,6 +1,8 @@
 from sqlalchemy.orm import Session
-from reminder.domain.question_set.model import QuestionSet
+
 from reminder.domain.question_set.entity import EQuestionSet
+from reminder.domain.question_set.model import QuestionSet
+
 
 class QuestionSetRepository:
 
@@ -13,8 +15,5 @@ class QuestionSetRepository:
 
     def _to_question_set(self, equestion_set: EQuestionSet) -> QuestionSet:
         return QuestionSet(
-            question=equestion_set.question,
-            answer=equestion_set.answer,
-            document_id=equestion_set.document_id
+            question=equestion_set.question, answer=equestion_set.answer, document_id=equestion_set.document_id
         )
-    

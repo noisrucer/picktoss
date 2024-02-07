@@ -1,5 +1,6 @@
 import enum
 
+
 class DocumentStatus(enum.Enum):
     UNPROCESSED = "UNPROCESSED"
     PROCESSED = "PROCESSED"

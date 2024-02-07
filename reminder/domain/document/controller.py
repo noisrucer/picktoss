@@ -1,9 +1,12 @@
-from fastapi import APIRouter, Depends, status, UploadFile,File
-from reminder.domain.document.request.upload_document_request import UploadDocumentRequest
-from reminder.domain.document.entity import EDocument
-from reminder.domain.document.dependency import document_service
+from fastapi import APIRouter, UploadFile, status
+
 from reminder.dependency.db import DBSessionDep
-from reminder.worker.question_generation.worker import handler
+from reminder.domain.document.dependency import document_service
+from reminder.domain.document.entity import EDocument
+from reminder.domain.document.request.upload_document_request import (
+    UploadDocumentRequest,
+)
+
 router = APIRouter(tags=["post"])
 
 
@@ -14,7 +17,7 @@ async def upload_document(file: UploadFile, request: UploadDocumentRequest, sess
         content_bytes=content_bytes,
         document_name=file.filename,
         user_document_name=request.userDocumentName,
-        format=request.documentFormat
+        format=request.documentFormat,
     )
 
     await document_service.upload_document(session=session, edocument=edocument)
