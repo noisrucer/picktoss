@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 
 from reminder.core.exception.base import BaseCustomException
 from reminder.domain.document.model import Document
+from reminder.domain.question_set.model import QuestionSet
 from reminder.core.database.session_manager import sessionmanager, Base
 from reminder.domain.document.controller import router as post_router
 

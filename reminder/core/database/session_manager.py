@@ -1,7 +1,7 @@
 import contextlib
 from typing import Any, AsyncIterator
-from sqlalchemy.orm import MappedAsDataclass, DeclarativeBase
-
+from sqlalchemy.orm import MappedAsDataclass, DeclarativeBase, sessionmaker
+from sqlalchemy import create_engine
 from sqlalchemy.ext.asyncio import (
     AsyncConnection,
     AsyncSession,
@@ -62,3 +62,18 @@ sessionmanager = DatabaseSessionManager(cfg.db.get_url())
 async def get_db_session():
     async with sessionmanager.session() as session:
         yield session
+
+
+
+sync_engine = create_engine(cfg.db.get_sync_url())
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=sync_engine)
+
+def get_sync_db_session():
+    db = SessionLocal()
+    try:
+        yield db
+    except Exception as e:
+        db.rollback()
+        raise e
+    finally:
+        db.close()

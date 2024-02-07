@@ -38,7 +38,6 @@ class S3Client:
         )
         content_bytes: bytes = file_obj['Body'].read()
         metadata: dict[str, bytes] = file_obj.get("Metadata", {})
-        decoded_metadata = {k: v.decode("utf-8") for k, v in metadata.items()}
-        return BucketObject(content_bytes=content_bytes, metadata=decoded_metadata)
+        return BucketObject(content_bytes=content_bytes, metadata=metadata)
         
     

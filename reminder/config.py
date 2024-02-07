@@ -13,6 +13,9 @@ class DBConfig:
 
     def get_url(self):
         return f"mysql+aiomysql://{self.username}:{self.password}@{self.host}:3306/{self.db_name}"
+    
+    def get_sync_url(self):
+        return f"mysql+pymysql://{self.username}:{self.password}@{self.host}:3306/{self.db_name}"
 
 
 @dataclass
@@ -34,11 +37,18 @@ class S3Config:
 
 
 @dataclass
+class SQSConfig:
+    region_name: str
+    queue_url: str
+
+
+@dataclass
 class AppConfig:
     db: DBConfig
     openai: OpenAIConfig
     aws: AWSConfig
     s3: S3Config
+    sqs: SQSConfig
 
 
 @lru_cache
@@ -67,11 +77,17 @@ def load_config() -> AppConfig:
         bucket_name="noisrucer-reminder"
     )
 
+    sqs_config = SQSConfig(
+        region_name="ap-northeast-1",
+        queue_url=os.environ['AWS_SQS_QUEUE_URL']
+    )
+
     app_config = AppConfig(
         db=db_config,
         openai=openai_config,
         aws=aws_config,
-        s3=s3_config
+        s3=s3_config,
+        sqs=sqs_config
     )
 
     return app_config

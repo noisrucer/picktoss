@@ -1,6 +1,8 @@
 from reminder.domain.document.model import Document
 from reminder.domain.document.entity import EDocument
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Session
+from sqlalchemy import select
 
 class DocumentRepository:
 
@@ -9,6 +11,9 @@ class DocumentRepository:
         session.add(document)
         await session.commit()
         return document.id
+    
+    def sync_find_by_id(self, session: Session, document_id: int) -> Document:
+        return session.scalars(select(Document).where(Document.id == document_id)).first()
 
     def _to_document(self, edocument: EDocument) -> Document:
         return Document(
@@ -17,3 +22,4 @@ class DocumentRepository:
             status=edocument.status.value
         )
         
+
