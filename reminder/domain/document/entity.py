@@ -5,9 +5,9 @@ from reminder.domain.document.enum import DocumentFormat, DocumentStatus
 
 @dataclass
 class EDocument:
+    name: str
+    category_id: int
     content_bytes: bytes
-    document_name: str
-    user_document_name: str
     format: DocumentFormat
     s3_key: str | None = None
     status: DocumentStatus = DocumentStatus.UNPROCESSED

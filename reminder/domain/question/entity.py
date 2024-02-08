@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class EQuestionSet:
+class EQuestion:
     question: str
     answer: str
     document_id: int

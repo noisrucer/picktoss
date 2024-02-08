@@ -8,4 +8,3 @@ class DocumentStatus(enum.Enum):
 
 class DocumentFormat(enum.Enum):
     MARKDOWN = "MARKDOWN"
-    PDF = "PDF"
