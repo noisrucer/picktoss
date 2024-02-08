@@ -1,14 +1,18 @@
 import contextlib
-from typing import Any, AsyncIterator
-from sqlalchemy.orm import MappedAsDataclass, DeclarativeBase
+from typing import Any
+from collections.abc import AsyncIterator
 
+from sqlalchemy import create_engine
 from sqlalchemy.ext.asyncio import (
     AsyncConnection,
     AsyncSession,
     async_sessionmaker,
     create_async_engine,
 )
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import (
+    declarative_base,
+    sessionmaker,
+)
 
 from reminder.config import load_config
 
@@ -59,6 +63,22 @@ class DatabaseSessionManager:
 
 sessionmanager = DatabaseSessionManager(cfg.db.get_url())
 
+
 async def get_db_session():
     async with sessionmanager.session() as session:
         yield session
+
+
+sync_engine = create_engine(cfg.db.get_sync_url())
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=sync_engine)
+
+
+def get_sync_db_session():
+    db = SessionLocal()
+    try:
+        yield db
+    except Exception as e:
+        db.rollback()
+        raise e
+    finally:
+        db.close()

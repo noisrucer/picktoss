@@ -1,10 +1,10 @@
-import re
 from reminder.core.llm.openai import ChatMessage
+
 
 def load_prompt_messages(prompt_path: str) -> list[ChatMessage]:
     with open(prompt_path) as f:
         content = f.read().strip()
-    
+
     parts = content.split("[%")
     messages = []
 
@@ -14,21 +14,17 @@ def load_prompt_messages(prompt_path: str) -> list[ChatMessage]:
             role, message_content = split_part
             role = role.strip()
             message_content = message_content.strip()
-            messages.append(
-                ChatMessage(role=role, content=message_content)
-            )
-    
+            messages.append(ChatMessage(role=role, content=message_content))
+
     return messages
 
 
 def fill_message_placeholders(messages: list[ChatMessage], placeholders: dict[str, str]) -> list[ChatMessage]:
-    provided_placeholder_name = set(placeholders.keys())
     messages = [ChatMessage(role=message.role, content=message.content) for message in messages]
 
     for message in messages:
         for placeholder_name, value in placeholders.items():
             if "{{$%s}}" % placeholder_name in message.content:
                 message.content = message.content.replace("{{$%s}}" % placeholder_name, str(value))
-        
-    return messages
 
+    return messages
