@@ -34,11 +34,30 @@ class S3Config:
 
 
 @dataclass
+class OauthConfig:
+    client_id: str
+    client_secret: str
+    redirect_uri: str
+
+
+@dataclass
+class JWTConfig:
+    secret_key: str
+    algorithm: str
+    access_token_expire_minutes: int
+    refresh_token_expire_minutes: int
+
+
+
+@dataclass
 class AppConfig:
     db: DBConfig
     openai: OpenAIConfig
     aws: AWSConfig
     s3: S3Config
+    oauth: OauthConfig
+    jwt: JWTConfig
+
 
 
 @lru_cache
@@ -66,12 +85,28 @@ def load_config() -> AppConfig:
         region_name="ap-northeast-1",
         bucket_name="noisrucer-reminder"
     )
+    
+    oauth_config = OauthConfig(
+        client_id=os.environ['CLIENT_ID'],
+        redirect_uri=os.environ['REDIRECT_URI'],
+        client_secret=os.environ['CLIENT_SECRET']
+    )
+    
+    jwt_config = JWTConfig(
+        secret_key=os.environ["JWT_SECRET_KEY"],
+        algorithm=os.environ["JWT_ALGORITHM"],
+        access_token_expire_minutes=int(os.environ["JWT_ACCESS_TOKEN_EXPIRE_MINUTES"]),
+        refresh_token_expire_minutes=int(os.environ["JWT_REFRESH_TOKEN_EXPIRE_MINUTES"]),
+    )
+        
 
     app_config = AppConfig(
         db=db_config,
         openai=openai_config,
         aws=aws_config,
-        s3=s3_config
+        s3=s3_config,
+        oauth=oauth_config,
+        jwt=jwt_config
     )
 
     return app_config
