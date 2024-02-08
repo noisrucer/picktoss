@@ -6,8 +6,8 @@ from reminder.core.llm.openai import chat_llm
 from reminder.core.llm.utils import fill_message_placeholders, load_prompt_messages
 from reminder.dependency.core import s3_client
 from reminder.domain.document.dependency import document_repository
-from reminder.domain.question_set.dependency import question_set_repository
-from reminder.domain.question_set.entity import EQuestionSet
+from reminder.domain.question.dependency import question_repository
+from reminder.domain.question.entity import EQuestion
 
 logging.basicConfig(level=logging.INFO)
 
@@ -33,7 +33,7 @@ def handler(event, context):
     for i in range(0, len(content), CHUNK_SIZE):
         chunks.append(content[i : i + CHUNK_SIZE])
 
-    equestion_sets: list[EQuestionSet] = []
+    equestions: list[EQuestion] = []
     without_placeholder_messages = load_prompt_messages("/var/task/reminder/core/llm/prompts/generate_questions.txt")
 
     for chunk in chunks:
@@ -42,12 +42,12 @@ def handler(event, context):
 
         for q_set in resp_dict:
             question, answer = q_set["question"], q_set["answer"]
-            equestion_set = EQuestionSet(question, answer, db_pk)
-            equestion_sets.append(equestion_set)
+            equestion = EQuestion(question, answer, db_pk)
+            equestions.append(equestion)
 
         # Save generated question sets to database
-        question_set_repository.sync_save_all(session, equestion_sets)
-        equestion_sets = []
+        question_repository.sync_save_all(session, equestions)
+        equestions = []
 
     # Mark the document as "processed"
     document = document_repository.sync_find_by_id(session, db_pk)

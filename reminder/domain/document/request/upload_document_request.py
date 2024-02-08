@@ -6,8 +6,9 @@ from reminder.domain.document.enum import DocumentFormat
 
 
 class UploadDocumentRequest(BaseModel):
-    userDocumentName: str = Field(default="11. 네트워크의 동작과 원리")
-    documentFormat: DocumentFormat = Field(default=DocumentFormat.MARKDOWN)
+    userDocumentName: str = Field(default=None, examples=["네트워크 DNS 동작과 원리"])
+    categoryId: int = Field(..., examples=[1])
+    documentFormat: DocumentFormat = Field(default=DocumentFormat.MARKDOWN, examples=["MARKDOWN"])
 
     @model_validator(mode="before")
     @classmethod

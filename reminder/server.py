@@ -3,10 +3,13 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-
+from reminder.domain.category.model import Category
+from reminder.domain.document.model import Document
+from reminder.domain.question.model import Question
 from reminder.core.database.session_manager import Base, sessionmanager
 from reminder.core.exception.base import BaseCustomException
 from reminder.domain.document.controller import router as post_router
+from reminder.domain.category.controller import router as category_router
 
 
 def init_exception_handlers(app: FastAPI) -> None:
@@ -41,6 +44,7 @@ def init_exception_handlers(app: FastAPI) -> None:
 
 def init_routers(app: FastAPI) -> None:
     app.include_router(post_router, prefix="/api/v1")
+    app.include_router(category_router, prefix="/api/v1")
 
 
 def create_app() -> FastAPI:
