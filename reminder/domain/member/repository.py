@@ -18,11 +18,7 @@ class MemberRepository:
         await session.commit()
 
     def _to_member_entity(self, emember: EMember) -> Member:
-        return Member(
-            id=emember.id,
-            name=emember.name,
-            email=emember.email
-        )
+        return Member(id=emember.id, name=emember.name, email=emember.email)
 
     # async def get_member_by_id(self, session: AsyncSession, member_id: str):
     #     member = (await session.scalars(select(Member).where(Member.member_id == member_id))).first()

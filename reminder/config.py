@@ -92,7 +92,6 @@ def load_config() -> AppConfig:
         redirect_uri=os.environ["OAUTH_REDIRECT_URI"],
         client_secret=os.environ["OAUTH_CLIENT_SECRET"],
     )
-    print(oauth_config)
 
     jwt_config = JWTConfig(
         secret_key=os.environ["JWT_SECRET_KEY"],

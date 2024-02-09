@@ -22,8 +22,6 @@ class MemberService:
 
     def redirect_response(self):
         url = f"https://accounts.google.com/o/oauth2/auth?client_id={cfg.oauth.client_id}&response_type=code&redirect_uri={cfg.oauth.redirect_uri}&scope=openid%20email%20profile"
-        print(cfg.oauth.client_id, cfg.oauth.redirect_uri)
-
         response = RedirectResponse(url)
 
         return response
@@ -42,8 +40,7 @@ class MemberService:
 
     def get_member_info(self, access_token):
         return requests.get(
-            url="https://www.googleapis.com/oauth2/v2/userinfo",
-            headers={"Authorization": f"Bearer {access_token}"}
+            url="https://www.googleapis.com/oauth2/v2/userinfo", headers={"Authorization": f"Bearer {access_token}"}
         ).json()
 
     async def verify_member(self, session: AsyncSession, emember: EMember):

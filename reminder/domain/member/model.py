@@ -13,9 +13,4 @@ class Member(Base, AuditBase):
     email: Mapped[str] = mapped_column(String(500), nullable=False)
 
     ## -- relationships
-
-    # OneToMany / member(1) : category(N)
-    # categories = relationship("Category", cascade="all, delete", backref="member")
-
-    ## - new relationships
     categories = relationship("Category", back_populates="member", cascade="all, delete-orphan")

@@ -27,18 +27,10 @@ async def oauth_callback(session: DBSessionDep, code: Optional[str] = None) -> C
     member_info = member_service.get_member_info(token["access_token"])
     access_token = member_service.create_access_token(member_info["id"])
 
-    emember = EMember(
-        id=member_info['id'],
-        name=member_info['name'],
-        email=member_info['email']
-    )
+    emember = EMember(id=member_info["id"], name=member_info["name"], email=member_info["email"])
 
-    await member_service.verify_member(session=session, emember=emember)   
+    await member_service.verify_member(session=session, emember=emember)
 
-    print(member_info)
-    print(f"google access token: {token['access_token']}")
-    print(f"자체 생성 access token : {access_token}")
-    
     return CallbackResponse(access_token=access_token, token_type="Bearer")
 
 

@@ -2,11 +2,11 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
 
+from reminder.domain.category.model import Category
 from reminder.domain.document.entity import EDocument
 from reminder.domain.document.model import Document
-from reminder.domain.question.model import Question
 from reminder.domain.member.model import Member
-from reminder.domain.category.model import Category
+from reminder.domain.question.model import Question
 
 
 class DocumentRepository:
@@ -21,14 +21,16 @@ class DocumentRepository:
         query = select(Document).where(Document.category_id == category_id)
         result = await session.execute(query)
         return result.scalars().fetchall()
-    
+
     async def find_by_id(self, session: AsyncSession, member_id: str, document_id: int) -> Document | None:
-        query = select(Document, Category)\
-                    .join(Category, Document.category_id == Category.id)\
-                    .join(Member, Category.member_id == Member.id)\
-                    .where(Member.id == member_id)\
-                    .where(Document.id == document_id)
-        
+        query = (
+            select(Document, Category)
+            .join(Category, Document.category_id == Category.id)
+            .join(Member, Category.member_id == Member.id)
+            .where(Member.id == member_id)
+            .where(Document.id == document_id)
+        )
+
         result = await session.execute(query)
         return result.scalars().first()
 
