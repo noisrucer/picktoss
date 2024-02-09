@@ -21,6 +21,7 @@ class MemberRepository:
         return Member(
             id=emember.id,
             name=emember.name,
+            email=emember.email
         )
 
     # async def get_member_by_id(self, session: AsyncSession, member_id: int):

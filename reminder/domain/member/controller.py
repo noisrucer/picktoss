@@ -28,34 +28,18 @@ async def oauth_callback(session: DBSessionDep, code: Optional[str] = None) -> C
     access_token = member_service.create_access_token(member_info["id"])
 
     emember = EMember(
-        id=member_info["id"],
-        name=member_info["properties"]["nickname"],
+        id=member_info['id'],
+        name=member_info['name'],
+        email=member_info['email']
     )
 
-    await member_service.verify_member(session=session, emember=emember)
+    await member_service.verify_member(session=session, emember=emember)   
+
+    print(member_info)
+    print(f"google access token: {token['access_token']}")
+    print(f"자체 생성 access token : {access_token}")
+    
     return CallbackResponse(access_token=access_token, token_type="Bearer")
-
-
-# @router.get('/logout')
-# def kakaoLogout(request: Request, response: Response):
-#     url = "https://kapi.kakao.com/v1/user/logout"
-#     headers = {
-#       "Authorization": f"Bearer WQj4T8f1lCw1I2gDRkTzK-3na9-GKnNVw-sKPXTZAAABjYRejBwq17LwdM8QAg"
-#     }
-#     res = requests.post(
-#       url=url,
-#       headers=headers
-#     )
-
-#     return {"logout": res.json()}
-
-
-@router.get("/unlink")
-def kakaoLogout():
-    url = "https://kapi.kakao.com/v1/user/unlink"
-    headers = {"Authorization": f"Bearer A4h3PKwYlkGUGg9b1KbklVmL9h8k4VnFH7kKKiURAAABjYhiqOsq17LwdM8QAg"}
-    res = requests.post(url=url, headers=headers)
-    return {"logout": res.json()}
 
 
 @router.get("/protected")

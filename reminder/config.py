@@ -72,6 +72,7 @@ class AppConfig:
 @lru_cache
 def load_config() -> AppConfig:
 
+
     db_config = DBConfig(
         host=os.environ["DB_HOST"],
         username=os.environ["DB_USER"],

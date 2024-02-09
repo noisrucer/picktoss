@@ -13,15 +13,16 @@ from reminder.domain.member.repository import MemberRepository
 cfg = load_config()
 
 
+### google ###
+
+
 class MemberService:
     def __init__(self, member_repository: MemberRepository):
         self.member_repository = member_repository
-        self.kakao_auth_server = "https://kauth.kakao.com"
-        self.kakao_api_server = "https://kapi.kakao.com"
-        self.default_header = {"Content-Type": "application/x-www-form-urlencoded"}
 
     def redirect_response(self):
-        url = f"https://kauth.kakao.com/oauth/authorize?client_id={cfg.oauth.client_id}&response_type=code&redirect_uri={cfg.oauth.redirect_uri}"
+        url = f"https://accounts.google.com/o/oauth2/auth?client_id={cfg.oauth.client_id}&response_type=code&redirect_uri={cfg.oauth.redirect_uri}&scope=openid%20email%20profile"
+        print(cfg.oauth.client_id, cfg.oauth.redirect_uri)
 
         response = RedirectResponse(url)
 
@@ -29,8 +30,7 @@ class MemberService:
 
     def token_auth(self, code):
         return requests.post(
-            url=self.kakao_auth_server + "/oauth/token",
-            headers=self.default_header,
+            url="https://oauth2.googleapis.com/token",
             data={
                 "grant_type": "authorization_code",
                 "client_id": cfg.oauth.client_id,
@@ -41,12 +41,9 @@ class MemberService:
         ).json()
 
     def get_member_info(self, access_token):
-        return requests.post(
-            url=self.kakao_api_server + "/v2/user/me",
-            headers={
-                **self.default_header,
-                **{"Authorization": f"Bearer {access_token}"},
-            },
+        return requests.get(
+            url="https://www.googleapis.com/oauth2/v2/userinfo",
+            headers={"Authorization": f"Bearer {access_token}"}
         ).json()
 
     async def verify_member(self, session: AsyncSession, emember: EMember):
