@@ -4,6 +4,9 @@ from sqlalchemy.orm import Session
 
 from reminder.domain.document.entity import EDocument
 from reminder.domain.document.model import Document
+from reminder.domain.question.model import Question
+from reminder.domain.member.model import Member
+from reminder.domain.category.model import Category
 
 
 class DocumentRepository:
@@ -13,11 +16,21 @@ class DocumentRepository:
         session.add(document)
         await session.commit()
         return document.id
-    
+
     async def find_all_by_category_id(self, session: AsyncSession, category_id: int) -> list[Document]:
         query = select(Document).where(Document.category_id == category_id)
         result = await session.execute(query)
         return result.scalars().fetchall()
+    
+    async def find_by_id(self, session: AsyncSession, member_id: int, document_id: int) -> Document | None:
+        query = select(Document, Category)\
+                    .join(Category, Document.category_id == Category.id)\
+                    .join(Member, Category.member_id == Member.id)\
+                    .where(Member.id == member_id)\
+                    .where(Document.id == document_id)
+        
+        result = await session.execute(query)
+        return result.scalars().first()
 
     def sync_find_by_id(self, session: Session, document_id: int) -> Document:
         return session.scalars(select(Document).where(Document.id == document_id)).first()
@@ -28,5 +41,5 @@ class DocumentRepository:
             format=edocument.format.value,
             s3_key=edocument.s3_key,
             status=edocument.status.value,
-            category_id=edocument.category_id
+            category_id=edocument.category_id,
         )

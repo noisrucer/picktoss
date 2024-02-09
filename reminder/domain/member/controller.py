@@ -1,14 +1,13 @@
-import requests
 from typing import Optional
+
+import requests
 from fastapi import APIRouter, Depends
 
-from reminder.dependency.db import DBSessionDep
-from reminder.domain.member.dependency import get_current_member_id
-from reminder.domain.member.entity import EMember
-from reminder.domain.member.dtos import CallbackResponse
-from reminder.domain.member.dependency import member_service
 from reminder.config import load_config
-
+from reminder.dependency.db import DBSessionDep
+from reminder.domain.member.dependency import get_current_member_id, member_service
+from reminder.domain.member.dtos import CallbackResponse
+from reminder.domain.member.entity import EMember
 
 router = APIRouter(tags=["member"])
 
@@ -16,33 +15,24 @@ router = APIRouter(tags=["member"])
 cfg = load_config()
 
 
-@router.get('/oauth/url')
+@router.get("/oauth/url")
 def oauth_url_api():
-    
     response = member_service.redirect_response()
-    
     return response
 
 
-@router.get('/callback', response_model=CallbackResponse)
-async def oauth_callback(session: DBSessionDep, code: Optional[str]=None) -> CallbackResponse:
-    
+@router.get("/callback", response_model=CallbackResponse)
+async def oauth_callback(session: DBSessionDep, code: Optional[str] = None) -> CallbackResponse:
     token = member_service.token_auth(code=code)
-    member_info = member_service.get_member_info(token['access_token'])
-    access_token = member_service.create_access_token(member_info['id'])
-    
+    member_info = member_service.get_member_info(token["access_token"])
+    access_token = member_service.create_access_token(member_info["id"])
+
     emember = EMember(
-        id=member_info['id'],
-        name=member_info['properties']['nickname'],
+        id=member_info["id"],
+        name=member_info["properties"]["nickname"],
     )
-    
+
     await member_service.verify_member(session=session, emember=emember)
-    
-    print(token)
-    print(member_info)
-    print(token['access_token'])
-    print(access_token)
-    
     return CallbackResponse(access_token=access_token, token_type="Bearer")
 
 
@@ -56,21 +46,15 @@ async def oauth_callback(session: DBSessionDep, code: Optional[str]=None) -> Cal
 #       url=url,
 #       headers=headers
 #     )
-    
+
 #     return {"logout": res.json()}
 
 
-@router.get('/unlink')
+@router.get("/unlink")
 def kakaoLogout():
     url = "https://kapi.kakao.com/v1/user/unlink"
-    headers = {
-      "Authorization": f"Bearer A4h3PKwYlkGUGg9b1KbklVmL9h8k4VnFH7kKKiURAAABjYhiqOsq17LwdM8QAg"
-    }
-    res = requests.post(
-      url=url,
-      headers=headers
-    )
-    
+    headers = {"Authorization": f"Bearer A4h3PKwYlkGUGg9b1KbklVmL9h8k4VnFH7kKKiURAAABjYhiqOsq17LwdM8QAg"}
+    res = requests.post(url=url, headers=headers)
     return {"logout": res.json()}
 
 

@@ -16,3 +16,4 @@ class Question(Base, AuditBase):
 
     # -- relationships
     # document: Mapped[Document] = relationship("Document", back_populates="questions", cascade="all")
+    document = relationship("Document", back_populates="questions")

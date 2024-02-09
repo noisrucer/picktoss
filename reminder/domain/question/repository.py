@@ -14,6 +14,4 @@ class QuestionRepository:
         return [question.id for question in questions]
 
     def _to_question(self, equestion: EQuestion) -> Question:
-        return Question(
-            question=equestion.question, answer=equestion.answer, document_id=equestion.document_id
-        )
+        return Question(question=equestion.question, answer=equestion.answer, document_id=equestion.document_id)
