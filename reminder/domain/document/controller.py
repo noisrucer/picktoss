@@ -13,7 +13,7 @@ from reminder.domain.document.response.upload_document_response import (
 )
 from reminder.domain.member.dependency import get_current_member_id
 
-router = APIRouter(tags=["post"])
+router = APIRouter(tags=["Document"])
 
 
 @router.post("/documents", status_code=status.HTTP_200_OK, response_model=UploadDocumentResponse)
@@ -47,10 +47,3 @@ async def get_all_documents_by_category(
 @router.get("/documents/{document_id}", response_model=GetDocumentResponse)
 async def get_document(document_id: int, session: DBSessionDep, member_id: str = Depends(get_current_member_id)):
     return await document_service.get_document_by_id(session, member_id, document_id)
-
-
-@router.get("/categories/{category_id}/documents/questions")
-async def get_all_category_questions_by_document(
-    category_id: int, session: DBSessionDep, member_id: str = Depends(get_current_member_id)
-):
-    pass

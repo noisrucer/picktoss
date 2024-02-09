@@ -11,6 +11,7 @@ from reminder.domain.category.model import Category
 from reminder.domain.document.controller import router as post_router
 from reminder.domain.document.model import Document
 from reminder.domain.member.controller import router as member_router
+from reminder.domain.question.controller import router as question_router
 from reminder.domain.question.model import Question
 
 
@@ -48,6 +49,7 @@ def init_routers(app: FastAPI) -> None:
     app.include_router(post_router, prefix="/api/v1")
     app.include_router(member_router, prefix="/api/v1")
     app.include_router(category_router, prefix="/api/v1")
+    app.include_router(question_router, prefix="/api/v1")
 
 
 def create_app() -> FastAPI:

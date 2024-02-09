@@ -23,5 +23,5 @@ class GetDocumentResponse(BaseModel):
     documentName: str = Field(..., examples=["네트워크 DNS의 기본과 원리"])
     format: str = Field(..., examples=["MARKDOWN"])
     createdAt: datetime = Field(..., examples=["2024-01-01"])
-    questions: list[QuestionResponseDto]
-    content: str
+    questions: list[QuestionResponseDto] = Field(...)
+    content: str = Field(...)

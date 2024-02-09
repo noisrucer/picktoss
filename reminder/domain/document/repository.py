@@ -17,14 +17,20 @@ class DocumentRepository:
         await session.commit()
         return document.id
 
-    async def find_all_by_category_id(self, session: AsyncSession, category_id: int) -> list[Document]:
-        query = select(Document).where(Document.category_id == category_id)
+    async def find_all_by_category_id(self, session: AsyncSession, member_id: str, category_id: int) -> list[Document]:
+        query = (
+            select(Document)
+            .join(Category, Document.category_id == Category.id)
+            .join(Member, Category.member_id == Member.id)
+            .where(Member.id == member_id)
+            .where(Category.id == category_id)
+        )
         result = await session.execute(query)
         return result.scalars().fetchall()
 
     async def find_by_id(self, session: AsyncSession, member_id: str, document_id: int) -> Document | None:
         query = (
-            select(Document, Category)
+            select(Document)
             .join(Category, Document.category_id == Category.id)
             .join(Member, Category.member_id == Member.id)
             .where(Member.id == member_id)
