@@ -59,6 +59,12 @@ class SQSConfig:
 
 
 @dataclass
+class EmailConfig:
+    mailgun_api_key: str
+    mailgun_domain: str
+
+
+@dataclass
 class AppConfig:
     db: DBConfig
     openai: OpenAIConfig
@@ -67,6 +73,7 @@ class AppConfig:
     oauth: OauthConfig
     jwt: JWTConfig
     sqs: SQSConfig
+    email: EmailConfig
 
 
 @lru_cache
@@ -99,6 +106,11 @@ def load_config() -> AppConfig:
         access_token_expire_minutes=int(os.environ["JWT_ACCESS_TOKEN_EXPIRE_MINUTES"]),
         refresh_token_expire_minutes=int(os.environ["JWT_REFRESH_TOKEN_EXPIRE_MINUTES"]),
     )
+    
+    email_config = EmailConfig(
+        mailgun_api_key=os.environ["MAILGUN_API_KEY"],
+        mailgun_domain=os.environ["MAILGUN_DOMAIN"]
+    )
 
     app_config = AppConfig(
         db=db_config,
@@ -108,6 +120,7 @@ def load_config() -> AppConfig:
         sqs=sqs_config,
         oauth=oauth_config,
         jwt=jwt_config,
+        email=email_config
     )
 
     return app_config
