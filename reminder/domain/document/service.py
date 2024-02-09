@@ -34,7 +34,7 @@ class DocumentService:
         self.s3_client = s3_client
         self.sqs_client = sqs_client
 
-    async def upload_document(self, session: AsyncSession, member_id: int, edocument: EDocument) -> UploadDocumentResponse:
+    async def upload_document(self, session: AsyncSession, member_id: str, edocument: EDocument) -> UploadDocumentResponse:
         # Ensure Category exists
         category_id = edocument.category_id
         category = await self.category_repository.find_or_none_by_id(session, member_id, category_id)
@@ -52,12 +52,12 @@ class DocumentService:
         document_id = await self.document_repository.save(session, edocument)
 
         # 3. Send a message to SQS for Lambda LLM worker to consume
-        # self.sqs_client.put({"s3_key": s3_key, "db_pk": document_id})
+        self.sqs_client.put({"s3_key": s3_key, "db_pk": document_id})
 
         return UploadDocumentResponse(id=document_id)
 
     async def get_all_documents_by_category(
-        self, session: AsyncSession, member_id: int, category_id: int
+        self, session: AsyncSession, member_id: str, category_id: int
     ) -> GetAllDocumentsByCategoryResponse:
         category = await self.category_repository.find_or_none_by_id(session, member_id, category_id)
         if category is None:
@@ -71,7 +71,7 @@ class DocumentService:
             ]
         )
     
-    async def get_document_by_id(self, session: AsyncSession, member_id: int, document_id: int) -> GetDocumentResponse:
+    async def get_document_by_id(self, session: AsyncSession, member_id: str, document_id: int) -> GetDocumentResponse:
         document = await self.document_repository.find_by_id(session, member_id, document_id)
         if document is None:
             raise DocumentNotFoundError(document_id)

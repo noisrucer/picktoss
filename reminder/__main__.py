@@ -19,8 +19,6 @@ def extract_args() -> dict:
 
 
 def main(env: str) -> None:
-    os.environ["ENV"] = env
-    os.environ["ENV_FILE_PATH"] = f".env.{env}"
     print(f"- Running server in {env} environment...")
     uvicorn.run(
         app="reminder.server:app",

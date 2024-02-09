@@ -16,7 +16,3 @@ cfg = load_config()
 
 def get_current_member_id(token: str = Depends(oauth2_scheme)):
     return member_service.decode_access_token(token)
-
-
-# def get_token(token: str = Depends(oauth2_scheme)):
-#     return token

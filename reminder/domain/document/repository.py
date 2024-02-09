@@ -22,7 +22,7 @@ class DocumentRepository:
         result = await session.execute(query)
         return result.scalars().fetchall()
     
-    async def find_by_id(self, session: AsyncSession, member_id: int, document_id: int) -> Document | None:
+    async def find_by_id(self, session: AsyncSession, member_id: str, document_id: int) -> Document | None:
         query = select(Document, Category)\
                     .join(Category, Document.category_id == Category.id)\
                     .join(Member, Category.member_id == Member.id)\

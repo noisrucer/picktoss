@@ -18,4 +18,4 @@ class Member(Base, AuditBase):
     # categories = relationship("Category", cascade="all, delete", backref="member")
 
     ## - new relationships
-    categories = relationship("Category", back_populates="member", cascade="all, delete")
+    categories = relationship("Category", back_populates="member", cascade="all, delete-orphan")

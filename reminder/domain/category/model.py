@@ -13,7 +13,7 @@ class Category(Base, AuditBase):
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True, index=True)
     name: Mapped[str] = mapped_column(String(100))
-    member_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("member.id", ondelete="CASCADE"))
+    member_id: Mapped[int] = mapped_column(String(100), ForeignKey("member.id", ondelete="CASCADE"))
 
     # -- relationships
 

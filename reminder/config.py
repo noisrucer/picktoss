@@ -71,8 +71,7 @@ class AppConfig:
 
 @lru_cache
 def load_config() -> AppConfig:
-
-
+    load_dotenv(".env")
     db_config = DBConfig(
         host=os.environ["DB_HOST"],
         username=os.environ["DB_USER"],
@@ -89,10 +88,11 @@ def load_config() -> AppConfig:
     sqs_config = SQSConfig(region_name="ap-northeast-1", queue_url=os.environ["AWS_SQS_QUEUE_URL"])
 
     oauth_config = OauthConfig(
-        client_id=os.environ["CLIENT_ID"],
-        redirect_uri=os.environ["REDIRECT_URI"],
-        client_secret=os.environ["CLIENT_SECRET"],
+        client_id=os.environ["OAUTH_CLIENT_ID"],
+        redirect_uri=os.environ["OAUTH_REDIRECT_URI"],
+        client_secret=os.environ["OAUTH_CLIENT_SECRET"],
     )
+    print(oauth_config)
 
     jwt_config = JWTConfig(
         secret_key=os.environ["JWT_SECRET_KEY"],

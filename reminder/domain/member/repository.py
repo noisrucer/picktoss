@@ -24,7 +24,7 @@ class MemberRepository:
             email=emember.email
         )
 
-    # async def get_member_by_id(self, session: AsyncSession, member_id: int):
+    # async def get_member_by_id(self, session: AsyncSession, member_id: str):
     #     member = (await session.scalars(select(Member).where(Member.member_id == member_id))).first()
 
     #     if not member:
