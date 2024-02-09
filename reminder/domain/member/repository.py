@@ -22,6 +22,7 @@ class MemberRepository:
         return Member(
             id=emember.id,
             name=emember.name,
+            email=emember.email
         )
         
     
