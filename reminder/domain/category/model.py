@@ -1,8 +1,10 @@
 from datetime import datetime
-from sqlalchemy import BigInteger, String, DateTime
-from reminder.core.database.session_manager import Base
+
+from sqlalchemy import BigInteger, DateTime, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
+
+from reminder.core.database.session_manager import Base
 from reminder.shared.base_model import AuditBase
 
 
@@ -11,12 +13,13 @@ class Category(Base, AuditBase):
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True, index=True)
     name: Mapped[str] = mapped_column(String(100))
-    # created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, server_default=func.now())
-    # updated_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
+    member_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("member.id", ondelete="CASCADE"))
 
     # -- relationships
 
     # OneToMany
-    documents = relationship(
-        "Document", cascade="all, delete", backref="category"
-    )
+    # documents = relationship("Document", cascade="all, delete", backref="category")
+    member = relationship("Member", back_populates="categories")
+
+    # -- new relationships
+    documents = relationship("Document", back_populates="category", cascade="all, delete-orphan")

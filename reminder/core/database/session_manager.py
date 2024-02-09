@@ -1,6 +1,6 @@
 import contextlib
-from typing import Any
 from collections.abc import AsyncIterator
+from typing import Any
 
 from sqlalchemy import create_engine
 from sqlalchemy.ext.asyncio import (
@@ -9,10 +9,7 @@ from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
     create_async_engine,
 )
-from sqlalchemy.orm import (
-    declarative_base,
-    sessionmaker,
-)
+from sqlalchemy.orm import declarative_base, sessionmaker
 
 from reminder.config import load_config
 
