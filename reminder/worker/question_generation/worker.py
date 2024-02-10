@@ -40,13 +40,21 @@ def handler(event, context):
     question_models: list[Question] = []
     without_placeholder_messages = load_prompt_messages("/var/task/reminder/core/llm/prompts/generate_questions.txt")
     free_plan_question_expose_count = 0
+    total_generated_question_count = 0
 
     for chunk in chunks:
+        # TODO: RESTORE TO NORMAL
+        if total_generated_question_count == 5:
+            break
         messages = fill_message_placeholders(messages=without_placeholder_messages, placeholders={"note": chunk})
         resp_dict = chat_llm.predict_json(messages)
 
         for q_set in resp_dict:
             question, answer = q_set["question"], q_set["answer"]
+            # TODO: RESTORE TO NORMAL
+            if total_generated_question_count == 5:
+                break
+            total_generated_question_count += 1
 
             if subscription_plan == SubscriptionPlanType.FREE.value:
                 if free_plan_question_expose_count >= 3:

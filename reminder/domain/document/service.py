@@ -56,7 +56,7 @@ class DocumentService:
     ) -> UploadDocumentResponse:
         # Ensure subscription plan document limit
         current_subscription: Subscription = await self.subscription_service.get_current_subscription_by_member_id(session, member_id)
-        current_subscription_num_uploaded_documents: int = await self.get_num_uploaded_documents_for_current_subscription_by_member_id(session, member_id)
+        current_subscription_num_uploaded_documents: int = await self.get_num_uploaded_documents_for_current_subscription_by_member_id(session, member_id, current_subscription)
         plan_type: SubscriptionPlanType = current_subscription.plan_type
 
         assert isinstance(plan_type, SubscriptionPlanType)
@@ -145,9 +145,7 @@ class DocumentService:
             content=content,
         )
     
-    async def get_num_uploaded_documents_for_current_subscription_by_member_id(self, session: AsyncSession, member_id: str) -> int:
-        # Get current subscription
-        current_subscription = await self.subscription_service.get_current_subscription_by_member_id(session, member_id)
+    async def get_num_uploaded_documents_for_current_subscription_by_member_id(self, session: AsyncSession, member_id: str, current_subscription: Subscription) -> int:
         purchased_date = current_subscription.purchased_date
         expire_date = current_subscription.expire_date
 
