@@ -7,7 +7,8 @@ from reminder.core.llm.utils import fill_message_placeholders, load_prompt_messa
 from reminder.dependency.core import s3_client
 from reminder.domain.document.dependency import document_repository
 from reminder.domain.question.dependency import question_repository
-from reminder.domain.question.entity import EQuestion
+from reminder.domain.question.model import Question
+from reminder.domain.subscription.enum import SubscriptionPlanType
 
 logging.basicConfig(level=logging.INFO)
 
@@ -20,6 +21,7 @@ def handler(event, context):
 
     s3_key = body["s3_key"]
     db_pk = int(body["db_pk"])
+    subscription_plan = body['subscription_plan']
 
     # Retrieve document from S3
     bucket_obj = s3_client.get_object(key=s3_key)
@@ -35,8 +37,9 @@ def handler(event, context):
     for i in range(0, len(content), CHUNK_SIZE):
         chunks.append(content[i : i + CHUNK_SIZE])
 
-    equestions: list[EQuestion] = []
+    question_models: list[Question] = []
     without_placeholder_messages = load_prompt_messages("/var/task/reminder/core/llm/prompts/generate_questions.txt")
+    free_plan_question_expose_count = 0
 
     for chunk in chunks:
         messages = fill_message_placeholders(messages=without_placeholder_messages, placeholders={"note": chunk})
@@ -44,12 +47,29 @@ def handler(event, context):
 
         for q_set in resp_dict:
             question, answer = q_set["question"], q_set["answer"]
-            equestion = EQuestion(question, answer, db_pk)
-            equestions.append(equestion)
+
+            if subscription_plan == SubscriptionPlanType.FREE.value:
+                if free_plan_question_expose_count >= 3:
+                    delivered_count = 0
+                else:
+                    delivered_count = 1
+                    free_plan_question_expose_count += 1
+            elif subscription_plan == SubscriptionPlanType.PRO.value:
+                delivered_count = 1
+            else:
+                raise ValueError("Wrong subscription plan type")
+            
+            question_model = Question(
+                question=question,
+                answer=answer,
+                document_id=db_pk,
+                delivered_count=delivered_count
+            )
+            question_models.append(question_model)
 
         # Save generated question sets to database
-        question_repository.sync_save_all(session, equestions)
-        equestions = []
+        question_repository.sync_save_all(session, question_models)
+        question_models = []
 
     # Mark the document as "processed"
     # document = document_repository.sync_find_by_id(session, db_pk)

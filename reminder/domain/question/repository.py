@@ -7,8 +7,7 @@ from reminder.domain.question.model import Question, QuestionQuestionSet, Questi
 
 class QuestionRepository:
 
-    def sync_save_all(self, session: Session, equestions: list[EQuestion]) -> list[int]:
-        questions = [self._to_question(equestion) for equestion in equestions]
+    def sync_save_all(self, session: Session, questions: list[Question]) -> list[int]:
         for question in questions:
             session.add(question)
         session.commit()
