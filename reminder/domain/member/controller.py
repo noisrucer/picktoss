@@ -29,10 +29,6 @@ def oauth_url_api():
     response = member_service.redirect_response()
     return response
 
-@router.get("/abc")
-def abc():
-    return RedirectResponse("http://localhost:3333/login?access-token=3232323")
-
 
 @router.get("/callback")
 async def oauth_callback(session: DBSessionDep, code: Optional[str] = None) -> CallbackResponse:

@@ -50,6 +50,7 @@ class OpenAIChatLLM:
         try:
             return json.loads(text)
         except json.JSONDecodeError:
+            print(text)
             return Exception("Invalid LLM JSON Response")
 
 

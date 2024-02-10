@@ -26,6 +26,7 @@ class QuestionService:
                 DocumentResponseDto(
                     id=doc.id,
                     documentName=doc.name,
+                    summary=doc.summary,
                     createdAt=doc.created_at,
                     questions=[QuestionResponseDto(id=question.id, question=question.question, answer=question.answer) for question in doc.questions if question.delivered_count > 0]
                 )
