@@ -90,9 +90,9 @@ def create_app() -> FastAPI:
     async def health_check():
         return "I'm very healthy. Don't worry"
     
+    init_middlewares(app)
     init_exception_handlers(app)
     init_routers(app)
-    init_middlewares(app)
 
     return app
 
