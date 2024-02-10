@@ -1,5 +1,7 @@
-from sqlalchemy import BigInteger, Enum, ForeignKey, String, Text
+from datetime import datetime
+from sqlalchemy import BigInteger, Enum, ForeignKey, String, Text, DateTime
 from sqlalchemy.orm import Mapped, backref, mapped_column, relationship
+from sqlalchemy.sql import func
 
 from reminder.core.database.session_manager import Base
 from reminder.domain.category.model import Category
@@ -28,3 +30,13 @@ class Document(Base, AuditBase):
 
     def complete_process(self):
         self.status = DocumentStatus.PROCESSED
+
+
+class DocumentUpload(Base):
+    __tablename__ = "document_upload"
+
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True, index=True)
+    upload_date: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.now)
+    # N:1
+    member_id: Mapped[str] = mapped_column(String(200), ForeignKey("member.id", ondelete="CASCADE"), nullable=False)
+    document_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("document.id"), nullable=False)

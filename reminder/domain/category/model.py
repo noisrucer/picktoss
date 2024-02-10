@@ -18,7 +18,7 @@ class Category(Base, AuditBase):
     # -- relationships
 
     # OneToMany
-    member = relationship("Member", back_populates="categories")
+    member = relationship("Member", back_populates="categories", lazy="selectin")
 
     # -- new relationships
-    documents = relationship("Document", back_populates="category", cascade="all, delete-orphan")
+    documents = relationship("Document", back_populates="category", cascade="all, delete-orphan", lazy="selectin")

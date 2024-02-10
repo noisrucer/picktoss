@@ -8,7 +8,7 @@ from reminder.core.database.session_manager import Base
 
 
 class AuditBase:
-    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, server_default=func.now())
+    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.now)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, nullable=False, server_default=func.now(), onupdate=func.now()
+        DateTime, nullable=False, default=datetime.now, onupdate=datetime.now
     )

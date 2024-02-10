@@ -9,6 +9,10 @@ from reminder.config import load_config
 from reminder.domain.member.entity import EMember
 from reminder.domain.member.exceptions import InvalidTokenScopeError, JWTError
 from reminder.domain.member.repository import MemberRepository
+from reminder.domain.member.model import Member
+from reminder.domain.subscription.model import Subscription
+from reminder.domain.subscription.enum import SubscriptionPlanType
+from reminder.domain.subscription.repository import SubscriptionRepository
 
 cfg = load_config()
 
@@ -19,8 +23,9 @@ cfg = load_config()
 
 
 class MemberService:
-    def __init__(self, member_repository: MemberRepository):
+    def __init__(self, member_repository: MemberRepository, subscription_repository: SubscriptionRepository):
         self.member_repository = member_repository
+        self.subscription_repository = subscription_repository
 
     def redirect_response(self):
         url = f"https://accounts.google.com/o/oauth2/auth?client_id={cfg.oauth.client_id}&response_type=code&redirect_uri={cfg.oauth.redirect_uri}&scope=openid%20email%20profile"
@@ -46,7 +51,23 @@ class MemberService:
         ).json()
 
     async def verify_member(self, session: AsyncSession, emember: EMember):
-        await self.member_repository.verify_member(session=session, emember=emember)
+        existing_member = await self.member_repository.get_member_or_none_by_id(session, emember.id)
+        if existing_member:
+            return
+        
+        # If new member
+        new_member = Member(id=emember.id, name=emember.name, email=emember.email)
+        await self.member_repository.save(session, new_member)
+
+        # Create new Free Subscription entry
+        now = datetime.now()
+        free_subscription = Subscription(
+            plan_type=SubscriptionPlanType.FREE,
+            purchased_date=now,
+            expire_date=now + timedelta(days=30),
+            member_id=new_member.id
+        )
+        await self.subscription_repository.save(session, free_subscription)
 
     def create_access_token(self, sub: str | int):
         payload = {

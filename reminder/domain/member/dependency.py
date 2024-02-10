@@ -6,11 +6,12 @@ from reminder.config import load_config
 from reminder.domain.member.exceptions import JWTError
 from reminder.domain.member.repository import MemberRepository
 from reminder.domain.member.service import MemberService
+from reminder.domain.subscription.dependency import subscription_repository
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/callback", scheme_name="JWT")
 
 member_repository = MemberRepository()
-member_service = MemberService(member_repository=member_repository)
+member_service = MemberService(member_repository=member_repository, subscription_repository=subscription_repository)
 cfg = load_config()
 
 
