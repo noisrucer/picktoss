@@ -5,6 +5,6 @@ from reminder.domain.category.dependency import category_repository
 
 question_repository = QuestionRepository()
 question_set_repository = QuestionSetRepository()
-question_quuestion_set_repository = QuestionQuestionSetRepository()
+question_question_set_repository = QuestionQuestionSetRepository()
 
-question_service = QuestionService(document_repository=document_repository, category_repository=category_repository)
+question_service = QuestionService(document_repository=document_repository, category_repository=category_repository, question_set_repository=question_set_repository)

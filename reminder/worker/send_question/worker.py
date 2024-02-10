@@ -5,7 +5,7 @@ from collections import defaultdict
 
 from reminder.dependency.core import email_manager
 from reminder.domain.document.dependency import document_repository
-from reminder.domain.question.dependency import question_repository, question_quuestion_set_repository, question_set_repository
+from reminder.domain.question.dependency import question_repository, question_question_set_repository, question_set_repository
 from reminder.domain.member.dependency import member_repository
 from reminder.domain.member.model import Member
 from reminder.domain.category.model import Category
@@ -81,7 +81,7 @@ def handler():
             for delivery_question
             in delivery_questions
         ]
-        question_quuestion_set_repository.sync_save_all(session, question_question_sets)
+        question_question_set_repository.sync_save_all(session, question_question_sets)
 
         # Increase delivered_count by 1
         for delivery_question in delivery_questions:

@@ -18,7 +18,7 @@ class Question(Base, AuditBase):
     # -- relationships
 
     # ManyToOne / Question(N) : Document(1)
-    document = relationship("Document", back_populates="questions")
+    document = relationship("Document", back_populates="questions", lazy="selectin")
 
     # OneToMany / Question(1) : QuestionQuestionSet(N)
     question_question_sets = relationship("QuestionQuestionSet", back_populates="question", lazy="selectin")
@@ -34,10 +34,10 @@ class QuestionQuestionSet(Base, AuditBase):
     # -- relationships
 
     # ManyToOne / (QuestionQuestionSet(N) : Question(1))
-    question = relationship("Question", back_populates="question_question_sets")
+    question = relationship("Question", back_populates="question_question_sets", lazy="selectin")
 
     # ManyToOne / (QuestionQuestionSet(N) : QuestionSet(1))
-    question_set = relationship("QuestionSet", back_populates="question_question_sets")
+    question_set = relationship("QuestionSet", back_populates="question_question_sets", lazy="selectin")
 
 
 class QuestionSet(Base, AuditBase):

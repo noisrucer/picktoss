@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
-
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 from reminder.domain.question.entity import EQuestion
 from reminder.domain.question.model import Question, QuestionQuestionSet, QuestionSet
 
@@ -26,6 +27,11 @@ class QuestionQuestionSetRepository:
 
 
 class QuestionSetRepository:
+    async def find_or_none_by_id(self, session: AsyncSession, question_set_id: str) -> QuestionSet | None:
+        query = select(QuestionSet).where(QuestionSet.id == question_set_id)
+        result = await session.execute(query)
+        return result.scalars().first()
+
     def sync_save(self, session: Session, question_set: QuestionSet) -> int:
         session.add(question_set)
         session.commit()
