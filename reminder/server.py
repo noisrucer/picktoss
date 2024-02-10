@@ -4,15 +4,15 @@ from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
+from reminder.domain.category.model import Category
+from reminder.domain.document.model import Document
+from reminder.domain.question.model import Question, QuestionQuestionSet, QuestionSet
 from reminder.core.database.session_manager import Base, sessionmanager
 from reminder.core.exception.base import BaseCustomException
 from reminder.domain.category.controller import router as category_router
-from reminder.domain.category.model import Category
 from reminder.domain.document.controller import router as post_router
-from reminder.domain.document.model import Document
 from reminder.domain.member.controller import router as member_router
 from reminder.domain.question.controller import router as question_router
-from reminder.domain.question.model import Question
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -54,12 +54,8 @@ def init_routers(app: FastAPI) -> None:
 
 
 def init_middlewares(app: FastAPI) -> None:
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=["*"],
-        allow_methods=["*"],
-        allow_headers=["*"]
-    )
+    origins = ["https://pick-toss.vercel.app/"]
+    app.add_middleware(CORSMiddleware, allow_origins=origins, allow_methods=["*"], allow_headers=["*"])
 
 
 def create_app() -> FastAPI:

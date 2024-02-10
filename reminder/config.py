@@ -91,7 +91,9 @@ def load_config() -> AppConfig:
 
     openai_config = OpenAIConfig(api_key=os.environ["REMINDER_OPENAI_API_KEY"], model="gpt-3.5-turbo")
 
-    aws_config = AWSConfig(access_key=os.environ["REMINDER_AWS_ACCESS_KEY"], secret_key=os.environ["REMINDER_AWS_SECRET_KEY"])
+    aws_config = AWSConfig(
+        access_key=os.environ["REMINDER_AWS_ACCESS_KEY"], secret_key=os.environ["REMINDER_AWS_SECRET_KEY"]
+    )
 
     s3_config = S3Config(region_name="ap-northeast-1", bucket_name="noisrucer-reminder")
 
@@ -109,10 +111,9 @@ def load_config() -> AppConfig:
         access_token_expire_minutes=int(os.environ["REMINDER_JWT_ACCESS_TOKEN_EXPIRE_MINUTES"]),
         refresh_token_expire_minutes=int(os.environ["REMINDER_JWT_REFRESH_TOKEN_EXPIRE_MINUTES"]),
     )
-    
+
     email_config = EmailConfig(
-        mailgun_api_key=os.environ["MAILGUN_API_KEY"],
-        mailgun_domain=os.environ["MAILGUN_DOMAIN"]
+        mailgun_api_key=os.environ["MAILGUN_API_KEY"], mailgun_domain=os.environ["MAILGUN_DOMAIN"]
     )
 
     app_config = AppConfig(
@@ -123,7 +124,7 @@ def load_config() -> AppConfig:
         sqs=sqs_config,
         oauth=oauth_config,
         jwt=jwt_config,
-        email=email_config
+        email=email_config,
     )
 
     return app_config

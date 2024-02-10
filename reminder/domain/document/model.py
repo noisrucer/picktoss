@@ -18,7 +18,6 @@ class Document(Base, AuditBase):
     status: Mapped[str] = mapped_column(Enum(DocumentStatus), nullable=False)
     category_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("category.id", ondelete="CASCADE"), nullable=False)
 
-
     # -- relationships
 
     # ManyToOne / document(N) : category(1)

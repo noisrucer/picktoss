@@ -19,6 +19,7 @@ def extract_args() -> dict:
     args = argParser.parse_args()
     return {"env": args.env, "host": args.host, "port": args.port}
 
+
 def main(env: str, host: str, port: int) -> None:
     os.environ["ENV"] = env
     print(f"- Running server in {env} environment...")

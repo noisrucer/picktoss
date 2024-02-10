@@ -60,14 +60,18 @@ def handler(event, context):
     # Generate Summary
     summary_input = ""
     for chunk in chunks:
-        summary_input += chunk[: 500]
+        summary_input += chunk[:500]
         if len(summary_input) > 2000:
             break
 
-    without_placeholder_summary_messages = load_prompt_messages("/var/task/reminder/core/llm/prompts/generate_summary.txt")
-    messages = fill_message_placeholders(messages=without_placeholder_summary_messages, placeholders={"note": summary_input})
+    without_placeholder_summary_messages = load_prompt_messages(
+        "/var/task/reminder/core/llm/prompts/generate_summary.txt"
+    )
+    messages = fill_message_placeholders(
+        messages=without_placeholder_summary_messages, placeholders={"note": summary_input}
+    )
     resp_dict = chat_llm.predict_json(messages)
-    summary = resp_dict['summary']
+    summary = resp_dict["summary"]
     document.summary = summary
     session.commit()
 

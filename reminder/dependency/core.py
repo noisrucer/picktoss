@@ -20,7 +20,4 @@ sqs_client = SQSClient(
     queue_url=cfg.sqs.queue_url,
 )
 
-email_manager = EmailManager(
-    mailgun_api_key=cfg.email.mailgun_api_key,
-    mailgun_domain=cfg.email.mailgun_domain
-)
+email_manager = EmailManager(mailgun_api_key=cfg.email.mailgun_api_key, mailgun_domain=cfg.email.mailgun_domain)

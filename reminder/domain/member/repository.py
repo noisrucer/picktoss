@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from reminder.domain.member.entity import EMember
 from reminder.domain.member.model import Member
+from sqlalchemy.orm import Session
 
 
 class MemberRepository:
@@ -16,6 +17,11 @@ class MemberRepository:
         member = self._to_member_entity(emember=emember)
         session.add(member)
         await session.commit()
+
+    def sync_find_all(self, session: Session) -> list[Member]:
+        query = select(Member)
+        result = session.execute(query)
+        return result.scalars().fetchall()
 
     def _to_member_entity(self, emember: EMember) -> Member:
         return Member(id=emember.id, name=emember.name, email=emember.email)

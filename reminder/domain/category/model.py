@@ -18,7 +18,6 @@ class Category(Base, AuditBase):
     # -- relationships
 
     # OneToMany
-    # documents = relationship("Document", cascade="all, delete", backref="category")
     member = relationship("Member", back_populates="categories")
 
     # -- new relationships

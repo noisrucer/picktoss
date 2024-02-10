@@ -71,10 +71,14 @@ class DocumentService:
         if category is None:
             raise CategoryNotFoundError(category_id)
 
-        documents: list[Document] = await self.document_repository.find_all_by_category_id(session, member_id, category_id)
+        documents: list[Document] = await self.document_repository.find_all_by_category_id(
+            session, member_id, category_id
+        )
         return GetAllDocumentsByCategoryResponse(
             documents=[
-                DocumentResponseDto(id=document.id, documentName=document.name, summary=document.summary, createdAt=document.created_at)
+                DocumentResponseDto(
+                    id=document.id, documentName=document.name, summary=document.summary, createdAt=document.created_at
+                )
                 for document in documents
             ]
         )
@@ -96,6 +100,10 @@ class DocumentService:
             summary=document.summary,
             format=document.format,
             createdAt=document.created_at,
-            questions=[QuestionResponseDto(id=q.id, question=q.question, answer=q.answer) for q in document.questions if q.delivered_count > 0],
+            questions=[
+                QuestionResponseDto(id=q.id, question=q.question, answer=q.answer)
+                for q in document.questions
+                if q.delivered_count > 0
+            ],
             content=content,
         )
