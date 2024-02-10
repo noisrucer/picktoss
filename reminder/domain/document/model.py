@@ -1,4 +1,4 @@
-from sqlalchemy import BigInteger, Enum, ForeignKey, String
+from sqlalchemy import BigInteger, Enum, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, backref, mapped_column, relationship
 
 from reminder.core.database.session_manager import Base
@@ -11,11 +11,13 @@ class Document(Base, AuditBase):
     __tablename__ = "document"
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True, index=True)
-    name: Mapped[str] = mapped_column(String(200))
+    name: Mapped[str] = mapped_column(String(200), nullable=False)
+    summary: Mapped[str] = mapped_column(Text, nullable=True)
     format: Mapped[str] = mapped_column(Enum(DocumentFormat), nullable=False)
     s3_key: Mapped[str] = mapped_column(String(500), nullable=False)
     status: Mapped[str] = mapped_column(Enum(DocumentStatus), nullable=False)
     category_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("category.id", ondelete="CASCADE"), nullable=False)
+
 
     # -- relationships
 
@@ -23,7 +25,6 @@ class Document(Base, AuditBase):
     category = relationship("Category", back_populates="documents", lazy="selectin")
 
     # OneToMany / document(1): question(N)
-    # questions = relationship("Question", cascade="all, delete", backref="document", lazy="selectin")
     questions = relationship("Question", back_populates="document", cascade="all, delete-orphan", lazy="selectin")
 
     def complete_process(self):

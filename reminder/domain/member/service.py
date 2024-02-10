@@ -13,7 +13,9 @@ from reminder.domain.member.repository import MemberRepository
 cfg = load_config()
 
 
-### google ###
+"""
+1. Client -> 
+"""
 
 
 class MemberService:

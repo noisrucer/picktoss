@@ -8,20 +8,33 @@ from reminder.dependency.db import DBSessionDep
 from reminder.domain.member.dependency import get_current_member_id, member_service
 from reminder.domain.member.dtos import CallbackResponse
 from reminder.domain.member.entity import EMember
+from fastapi.responses import RedirectResponse
 
 router = APIRouter(tags=["member"])
 
 
 cfg = load_config()
 
+"""
+1. Client -> /oauth/url
+2. End user -> google login 페이지 보임 -> 동의후에 클릭
+3. Google이 query param에 code를 넣어서 callbackurl에 보냄
+4. Backend가 callback endpoint에 들어온 요청에서, "code" query param을 추출을 한다
+5. Backend -> Google, client_id, code, 등 넣어서 user 정보 반환
+6. JWT token 생성 -> front 반환
+"""
 
 @router.get("/oauth/url")
 def oauth_url_api():
     response = member_service.redirect_response()
     return response
 
+@router.get("/abc")
+def abc():
+    return RedirectResponse("http://localhost:3333/login?access-token=3232323")
 
-@router.get("/callback", response_model=CallbackResponse)
+
+@router.get("/callback")
 async def oauth_callback(session: DBSessionDep, code: Optional[str] = None) -> CallbackResponse:
     token = member_service.token_auth(code=code)
     member_info = member_service.get_member_info(token["access_token"])
@@ -31,6 +44,8 @@ async def oauth_callback(session: DBSessionDep, code: Optional[str] = None) -> C
 
     await member_service.verify_member(session=session, emember=emember)
 
+    
+    return RedirectResponse(f"https://pick-toss.vercel.app/oauth?access-token={access_token}")
     return CallbackResponse(access_token=access_token, token_type="Bearer")
 
 

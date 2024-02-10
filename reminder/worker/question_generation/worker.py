@@ -28,6 +28,8 @@ def handler(event, context):
     # Generate QuestionSet and upload to DB
     session = next(get_sync_db_session())
 
+    # Generate Questions
+
     CHUNK_SIZE = 2000
     chunks: list[str] = []
     for i in range(0, len(content), CHUNK_SIZE):
@@ -50,8 +52,23 @@ def handler(event, context):
         equestions = []
 
     # Mark the document as "processed"
+    # document = document_repository.sync_find_by_id(session, db_pk)
     document = document_repository.sync_find_by_id(session, db_pk)
     document.complete_process()
+    session.commit()
+
+    # Generate Summary
+    summary_input = ""
+    for chunk in chunks:
+        summary_input += chunk[: 500]
+        if len(summary_input) > 2000:
+            break
+
+    without_placeholder_summary_messages = load_prompt_messages("/var/task/reminder/core/llm/prompts/generate_summary.txt")
+    messages = fill_message_placeholders(messages=without_placeholder_summary_messages, placeholders={"note": summary_input})
+    resp_dict = chat_llm.predict_json(messages)
+    summary = resp_dict['summary']
+    document.summary = summary
     session.commit()
 
     return {"statusCode": 200, "message": "hi"}

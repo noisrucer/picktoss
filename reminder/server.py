@@ -13,6 +13,7 @@ from reminder.domain.document.model import Document
 from reminder.domain.member.controller import router as member_router
 from reminder.domain.question.controller import router as question_router
 from reminder.domain.question.model import Question
+from fastapi.middleware.cors import CORSMiddleware
 
 
 def init_exception_handlers(app: FastAPI) -> None:
@@ -52,6 +53,15 @@ def init_routers(app: FastAPI) -> None:
     app.include_router(question_router, prefix="/api/v1")
 
 
+def init_middlewares(app: FastAPI) -> None:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_methods=["*"],
+        allow_headers=["*"]
+    )
+
+
 def create_app() -> FastAPI:
 
     @asynccontextmanager
@@ -66,6 +76,7 @@ def create_app() -> FastAPI:
 
     init_exception_handlers(app)
     init_routers(app)
+    init_middlewares(app)
 
     @app.get("/health-check")
     async def health_check():

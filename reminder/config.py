@@ -79,32 +79,35 @@ class AppConfig:
 @lru_cache
 def load_config() -> AppConfig:
     load_dotenv(".env")
+    # os.environ['REMINDER_OAUTH_REDIRECT_URI'] = "http://localhost:8888/api/v1/callback"
+    # os.environ["REMINDER_DB_NAME"] = "reminder_dev"
+
     db_config = DBConfig(
-        host=os.environ["DB_HOST"],
-        username=os.environ["DB_USER"],
-        password=os.environ["DB_PASSWORD"],
-        db_name=os.environ["DB_NAME"],
+        host=os.environ["REMINDER_DB_HOST"],
+        username=os.environ["REMINDER_DB_USER"],
+        password=os.environ["REMINDER_DB_PASSWORD"],
+        db_name=os.environ["REMINDER_DB_NAME"],
     )
 
-    openai_config = OpenAIConfig(api_key=os.environ["OPENAI_API_KEY"], model="gpt-3.5-turbo")
+    openai_config = OpenAIConfig(api_key=os.environ["REMINDER_OPENAI_API_KEY"], model="gpt-3.5-turbo")
 
-    aws_config = AWSConfig(access_key=os.environ["AWS_ACCESS_KEY"], secret_key=os.environ["AWS_SECRET_KEY"])
+    aws_config = AWSConfig(access_key=os.environ["REMINDER_AWS_ACCESS_KEY"], secret_key=os.environ["REMINDER_AWS_SECRET_KEY"])
 
     s3_config = S3Config(region_name="ap-northeast-1", bucket_name="noisrucer-reminder")
 
-    sqs_config = SQSConfig(region_name="ap-northeast-1", queue_url=os.environ["AWS_SQS_QUEUE_URL"])
+    sqs_config = SQSConfig(region_name="ap-northeast-1", queue_url=os.environ["REMINDER_AWS_SQS_QUEUE_URL"])
 
     oauth_config = OauthConfig(
-        client_id=os.environ["OAUTH_CLIENT_ID"],
-        redirect_uri=os.environ["OAUTH_REDIRECT_URI"],
-        client_secret=os.environ["OAUTH_CLIENT_SECRET"],
+        client_id=os.environ["REMINDER_OAUTH_CLIENT_ID"],
+        redirect_uri=os.environ["REMINDER_OAUTH_REDIRECT_URI"],
+        client_secret=os.environ["REMINDER_OAUTH_CLIENT_SECRET"],
     )
 
     jwt_config = JWTConfig(
-        secret_key=os.environ["JWT_SECRET_KEY"],
-        algorithm=os.environ["JWT_ALGORITHM"],
-        access_token_expire_minutes=int(os.environ["JWT_ACCESS_TOKEN_EXPIRE_MINUTES"]),
-        refresh_token_expire_minutes=int(os.environ["JWT_REFRESH_TOKEN_EXPIRE_MINUTES"]),
+        secret_key=os.environ["REMINDER_JWT_SECRET_KEY"],
+        algorithm=os.environ["REMINDER_JWT_ALGORITHM"],
+        access_token_expire_minutes=int(os.environ["REMINDER_JWT_ACCESS_TOKEN_EXPIRE_MINUTES"]),
+        refresh_token_expire_minutes=int(os.environ["REMINDER_JWT_REFRESH_TOKEN_EXPIRE_MINUTES"]),
     )
     
     email_config = EmailConfig(
