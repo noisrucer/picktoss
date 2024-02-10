@@ -89,7 +89,7 @@ def handler():
 
         # Send Email
         content = email_manager.read_and_format_html(
-            replacements={"__VERIFICATION_CODE__": f'https://pick-toss.vercel.app/random?question_set_id={question_set_id}'}
+            replacements={"__VERIFICATION_CODE__": f'http://localhost:5173/random?question_set_id={question_set_id}'}
         )
 
         email_manager.send_email(
