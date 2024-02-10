@@ -27,8 +27,7 @@ cfg = load_config()
 
 @router.get("/oauth/url")
 def oauth_url_api():
-    response = member_service.redirect_response()
-    return response
+    return {"oauth_url": f"https://accounts.google.com/o/oauth2/auth?client_id={cfg.oauth.client_id}&response_type=code&redirect_uri={cfg.oauth.redirect_uri}&scope=openid%20email%20profile"}
 
 
 @router.get("/callback")
