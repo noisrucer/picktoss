@@ -54,7 +54,7 @@ def init_routers(app: FastAPI) -> None:
 
 
 def init_middlewares(app: FastAPI) -> None:
-    origins = ["https://pick-toss.vercel.app/"]
+    origins = ["https://pick-toss.vercel.app"]
     app.add_middleware(CORSMiddleware, allow_origins=origins, allow_methods=["*"], allow_headers=["*"])
 
 
