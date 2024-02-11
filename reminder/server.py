@@ -2,18 +2,21 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request, Response
 from fastapi.exceptions import RequestValidationError
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from reminder.domain.category.model import Category
-from reminder.domain.document.model import Document
-from reminder.domain.question.model import Question, QuestionQuestionSet, QuestionSet
 from reminder.core.database.session_manager import Base, sessionmanager
 from reminder.core.exception.base import BaseCustomException
 from reminder.domain.category.controller import router as category_router
+from reminder.domain.category.model import Category
 from reminder.domain.document.controller import router as post_router
+from reminder.domain.document.model import Document
 from reminder.domain.member.controller import router as member_router
+from reminder.domain.member.model import Member
 from reminder.domain.question.controller import router as question_router
-from fastapi.middleware.cors import CORSMiddleware
+from reminder.domain.question.model import Question, QuestionQuestionSet, QuestionSet
+from reminder.domain.subscription.controller import router as subscription_router
+from reminder.domain.subscription.model import Subscription
 
 
 def init_exception_handlers(app: FastAPI) -> None:
@@ -51,6 +54,7 @@ def init_routers(app: FastAPI) -> None:
     app.include_router(member_router, prefix="/api/v1")
     app.include_router(category_router, prefix="/api/v1")
     app.include_router(question_router, prefix="/api/v1")
+    app.include_router(subscription_router, prefix="/api/v1")
 
 
 def init_middlewares(app: FastAPI) -> None:
@@ -61,7 +65,7 @@ def init_middlewares(app: FastAPI) -> None:
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
-        expose_headers=["*"]
+        expose_headers=["*"],
     )
 
     # @app.middleware("http")
@@ -89,7 +93,7 @@ def create_app() -> FastAPI:
     @app.get("/health-check")
     async def health_check():
         return "I'm very healthy. Don't worry"
-    
+
     init_middlewares(app)
     init_exception_handlers(app)
     init_routers(app)

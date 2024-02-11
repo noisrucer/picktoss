@@ -79,8 +79,8 @@ class AppConfig:
 @lru_cache
 def load_config() -> AppConfig:
     load_dotenv(".env")
-    # os.environ['REMINDER_OAUTH_REDIRECT_URI'] = "http://localhost:8888/api/v1/callback"
-    os.environ["REMINDER_DB_NAME"] = "reminder_dev"
+    # os.environ["REMINDER_OAUTH_REDIRECT_URI"] = "http://localhost:8888/api/v1/callback"
+    # os.environ["REMINDER_DB_NAME"] = "reminder_dev"
 
     db_config = DBConfig(
         host=os.environ["REMINDER_DB_HOST"],

@@ -1,7 +1,9 @@
 from fastapi import APIRouter, Depends, Form, UploadFile, status
 
 from reminder.dependency.db import DBSessionDep
-from reminder.domain.document.dependency import document_service
+
+# from reminder.domain.document.dependency import document_service
+from reminder.container import document_service
 from reminder.domain.document.entity import EDocument
 from reminder.domain.document.enum import DocumentFormat
 from reminder.domain.document.response.get_all_documents_by_category_response import (

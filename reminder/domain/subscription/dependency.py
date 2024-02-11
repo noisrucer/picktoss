@@ -1,6 +1,0 @@
-from reminder.domain.subscription.service import SubscriptionService
-from reminder.domain.subscription.repository import SubscriptionRepository
-
-
-subscription_repository = SubscriptionRepository()
-subsription_service = SubscriptionService(subscription_repository=subscription_repository)

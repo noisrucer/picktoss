@@ -1,24 +1,25 @@
-import random
+import asyncio
 import json
 import logging
+import random
+import uuid
 from collections import defaultdict
 
+from reminder.core.database.session_manager import get_sync_db_session
 from reminder.dependency.core import email_manager
-from reminder.domain.document.dependency import document_repository
-from reminder.domain.question.dependency import question_repository, question_question_set_repository, question_set_repository
-from reminder.domain.member.dependency import member_repository
-from reminder.domain.member.model import Member
 from reminder.domain.category.model import Category
 from reminder.domain.document.model import Document
-from reminder.domain.question.model import Question, QuestionQuestionSet, QuestionSet
+from reminder.domain.member.model import Member
 from reminder.domain.question.entity import EQuestion
-from reminder.core.database.session_manager import get_sync_db_session
-import uuid
+from reminder.domain.question.model import Question, QuestionQuestionSet, QuestionSet
+from reminder.container import member_repository, document_repository, question_question_set_repository, question_repository, question_set_repository, subscription_service
+from reminder.domain.subscription.model import Subscription
+from reminder.domain.subscription.enum import SubscriptionPlanType
 
 logging.basicConfig(level=logging.INFO)
 
 
-def handler():
+async def handler():
     """
     Generate QuestionSet for each member.
 
@@ -27,27 +28,27 @@ def handler():
     session = next(get_sync_db_session())
     members: list[Member] = member_repository.sync_find_all(session)
     for member in members:
+        subscription: Subscription = subscription_service.sync_get_current_subscription_by_member_id(session, member.id)
+
         candidate_question_map: dict[int, list[Question]] = defaultdict(list)
         total_question_count = 0
         categories: list[Category] = member.categories
         for category in categories:
-            documents = category.documents
+            documents: list[Document] = category.documents
             for document in documents:
                 questions: list[Question] = document.questions
                 for question in questions:
-                    # q = question.question
-                    # a = question.answer
                     delivered_count = question.delivered_count
                     candidate_question_map[delivered_count].append(question)
                     total_question_count += 1
-        
+
         # If less than or equal to 5 questions generated, skip
         if total_question_count <= 5:
             continue
 
         # Select candidates
         delivery_questions: list[Question] = []
-        DELIVERY_QUESTIION_NUM = 5
+        DELIVERY_QUESTIION_NUM = 3 if subscription.plan_type == SubscriptionPlanType.FREE else 10
         current_count = 0
         sorted_keys = sorted(candidate_question_map.keys())
         full_flag = False
@@ -65,8 +66,7 @@ def handler():
                     break
             if full_flag:
                 break
-        
-        
+
         # Generate a new QuestionSet
         question_set_id = uuid.uuid4().hex
         question_set = QuestionSet(id=question_set_id, member_id=member.id)
@@ -74,12 +74,8 @@ def handler():
 
         # Insert QuestionQuestionSets
         question_question_sets = [
-            QuestionQuestionSet(
-                question_id=delivery_question.id,
-                question_set_id=question_set_id
-            )
-            for delivery_question
-            in delivery_questions
+            QuestionQuestionSet(question_id=delivery_question.id, question_set_id=question_set_id)
+            for delivery_question in delivery_questions
         ]
         question_question_set_repository.sync_save_all(session, question_question_sets)
 
@@ -89,14 +85,10 @@ def handler():
 
         # Send Email
         content = email_manager.read_and_format_html(
-            replacements={"__VERIFICATION_CODE__": f'http://localhost:5173/random?question_set_id={question_set_id}'}
+            replacements={"__VERIFICATION_CODE__": f"http://localhost:5173/random?question_set_id={question_set_id}"}
         )
 
-        email_manager.send_email(
-            recipient=member.email,
-            subject="🚀 오늘의 퀴즈가 도착했습니다!",
-            content=content
-        )
+        email_manager.send_email(recipient=member.email, subject="🚀 오늘의 퀴즈가 도착했습니다!", content=content)
 
         # Commit session
         session.commit()
@@ -104,4 +96,4 @@ def handler():
     return {"statusCode": 200, "message": "hi"}
 
 
-handler()
+asyncio.run(handler())

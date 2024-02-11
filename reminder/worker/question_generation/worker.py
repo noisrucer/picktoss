@@ -5,10 +5,10 @@ from reminder.core.database.session_manager import get_sync_db_session
 from reminder.core.llm.openai import chat_llm
 from reminder.core.llm.utils import fill_message_placeholders, load_prompt_messages
 from reminder.dependency.core import s3_client
-from reminder.domain.document.dependency import document_repository
-from reminder.domain.question.dependency import question_repository
 from reminder.domain.question.model import Question
 from reminder.domain.subscription.enum import SubscriptionPlanType
+from reminder.container import document_repository, question_repository
+
 
 logging.basicConfig(level=logging.INFO)
 
@@ -21,7 +21,7 @@ def handler(event, context):
 
     s3_key = body["s3_key"]
     db_pk = int(body["db_pk"])
-    subscription_plan = body['subscription_plan']
+    subscription_plan = body["subscription_plan"]
 
     # Retrieve document from S3
     bucket_obj = s3_client.get_object(key=s3_key)
@@ -66,12 +66,9 @@ def handler(event, context):
                 delivered_count = 1
             else:
                 raise ValueError("Wrong subscription plan type")
-            
+
             question_model = Question(
-                question=question,
-                answer=answer,
-                document_id=db_pk,
-                delivered_count=delivered_count
+                question=question, answer=answer, document_id=db_pk, delivered_count=delivered_count
             )
             question_models.append(question_model)
 

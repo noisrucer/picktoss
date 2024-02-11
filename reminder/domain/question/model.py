@@ -1,4 +1,4 @@
-from sqlalchemy import BigInteger, ForeignKey, Text, Integer, String
+from sqlalchemy import BigInteger, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from reminder.core.database.session_manager import Base

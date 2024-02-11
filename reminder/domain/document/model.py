@@ -1,5 +1,6 @@
 from datetime import datetime
-from sqlalchemy import BigInteger, Enum, ForeignKey, String, Text, DateTime
+
+from sqlalchemy import BigInteger, DateTime, Enum, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, backref, mapped_column, relationship
 from sqlalchemy.sql import func
 
@@ -28,6 +29,10 @@ class Document(Base, AuditBase):
     # OneToMany / document(1): question(N)
     questions = relationship("Question", back_populates="document", cascade="all, delete-orphan", lazy="selectin")
 
+    document_upload = relationship(
+        "DocumentUpload", back_populates="document", cascade="all, delete-orphan", lazy="selectin"
+    )
+
     def complete_process(self):
         self.status = DocumentStatus.PROCESSED
 
@@ -36,7 +41,10 @@ class DocumentUpload(Base):
     __tablename__ = "document_upload"
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True, index=True)
-    upload_date: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.now)
+    upload_date: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.utcnow)
     # N:1
     member_id: Mapped[str] = mapped_column(String(200), ForeignKey("member.id", ondelete="CASCADE"), nullable=False)
-    document_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("document.id"), nullable=False)
+    document_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("document.id", ondelete="CASCADE"), nullable=False)
+
+    ## -- relationship
+    document = relationship("Document", back_populates="document_upload", lazy="selectin")

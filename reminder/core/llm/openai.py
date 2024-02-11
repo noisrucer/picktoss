@@ -16,7 +16,7 @@ class ChatMessage:
 
 
 class OpenAIChatLLM:
-    def __init__(self, api_key: str, model: str = "gpt-3.5-turbo", temperature: float = 0.5):
+    def __init__(self, api_key: str, model: str = "gpt-3.5-turbo-0125", temperature: float = 0.8):
         self.async_client = AsyncOpenAI(api_key=api_key)
         self.sync_client = OpenAI(api_key=api_key)
 
@@ -24,7 +24,7 @@ class OpenAIChatLLM:
 
     async def apredict_json(self, messages: list[ChatMessage]) -> dict:
         extra_params = {}
-        if self.model_kwargs["model"] == "gpt-3.5-turbo":
+        if self.model_kwargs["model"] == "gpt-3.5-turbo-0125":
             extra_params["response_format"] = {"type": "json_object"}
 
         resp = await self.async_client.chat.completions.create(
@@ -50,7 +50,6 @@ class OpenAIChatLLM:
         try:
             return json.loads(text)
         except json.JSONDecodeError:
-            print(text)
             return Exception("Invalid LLM JSON Response")
 
 

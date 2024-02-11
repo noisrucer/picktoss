@@ -1,7 +1,9 @@
 from fastapi import APIRouter, Depends, status
 
 from reminder.dependency.db import DBSessionDep
-from reminder.domain.category.dependency import category_service
+
+# from reminder.domain.category.dependency import category_service
+from reminder.container import category_service
 from reminder.domain.category.request.create_category_request import (
     CreateCategoryRequest,
 )

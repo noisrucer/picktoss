@@ -3,17 +3,27 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import ExpiredSignatureError
 
 from reminder.config import load_config
-from reminder.domain.member.exceptions import JWTError
+from reminder.domain.member.exceptions import InvalidTokenScopeError, JWTError
 from reminder.domain.member.repository import MemberRepository
 from reminder.domain.member.service import MemberService
-from reminder.domain.subscription.dependency import subscription_repository
+from jose import ExpiredSignatureError, jwt
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/callback", scheme_name="JWT")
 
-member_repository = MemberRepository()
-member_service = MemberService(member_repository=member_repository, subscription_repository=subscription_repository)
 cfg = load_config()
 
 
 def get_current_member_id(token: str = Depends(oauth2_scheme)):
-    return member_service.decode_access_token(token)
+    def decode_access_token(token: str):
+        try:
+            payload = jwt.decode(token, cfg.jwt.secret_key, algorithms=[cfg.jwt.algorithm])
+            if payload["scope"] != "access_token":
+                raise InvalidTokenScopeError
+            member_id = payload["sub"]
+            return member_id
+        except ExpiredSignatureError:
+            raise JWTError()
+        except Exception:
+            raise JWTError()
+
+    return decode_access_token(token)

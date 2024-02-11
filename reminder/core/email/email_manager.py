@@ -11,7 +11,7 @@ class EmailManager:
         requests.post(
             url=self.mailgun_domain,
             auth=("api", self.mailgun_api_key),
-            data={"from": "reminder <admin@girok.org>", "to": [recipient], "subject": subject, "html": content},
+            data={"from": "picktoss <support@picktoss.com>", "to": [recipient], "subject": subject, "html": content},
         )
 
     def read_and_format_html(

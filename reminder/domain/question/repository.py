@@ -1,6 +1,7 @@
-from sqlalchemy.orm import Session
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Session
+
 from reminder.domain.question.entity import EQuestion
 from reminder.domain.question.model import Question, QuestionQuestionSet, QuestionSet
 
@@ -30,6 +31,11 @@ class QuestionSetRepository:
         query = select(QuestionSet).where(QuestionSet.id == question_set_id)
         result = await session.execute(query)
         return result.scalars().first()
+
+    async def find_all_by_member_id(self, session: AsyncSession, member_id: str) -> list[QuestionSet]:
+        query = select(QuestionSet).where(QuestionSet.member_id == member_id)
+        result = await session.execute(query)
+        return result.scalars().fetchall()
 
     def sync_save(self, session: Session, question_set: QuestionSet) -> int:
         session.add(question_set)

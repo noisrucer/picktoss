@@ -1,5 +1,7 @@
 from datetime import datetime
+
 from pydantic import BaseModel, Field
+
 
 class GetQuestionSetByIdDocumentDto(BaseModel):
     id: int = Field(..., examples=[229])
@@ -9,7 +11,7 @@ class GetQuestionSetByIdDocumentDto(BaseModel):
 class GetQuestionSetByIdCategoryDto(BaseModel):
     id: int = Field(..., examples=[83])
     name: str = Field(..., examples=["네트워크"])
-    
+
 
 class GetQuestionSetByIdQuestionDto(BaseModel):
     id: int = Field(..., examples=[10])

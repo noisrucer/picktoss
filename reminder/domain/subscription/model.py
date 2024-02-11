@@ -1,10 +1,11 @@
 from datetime import datetime
-from sqlalchemy import BigInteger, String, Boolean, DateTime, Enum, ForeignKey
+
+from sqlalchemy import BigInteger, Boolean, DateTime, Enum, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from reminder.core.database.session_manager import Base
-from reminder.shared.base_model import AuditBase
 from reminder.domain.subscription.enum import SubscriptionPlanType
+from reminder.shared.base_model import AuditBase
 
 
 class Subscription(Base):

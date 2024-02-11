@@ -1,7 +1,7 @@
 from reminder.config import load_config
+from reminder.core.email.email_manager import EmailManager
 from reminder.core.s3.s3_client import S3Client
 from reminder.core.sqs.sqs_client import SQSClient
-from reminder.core.email.email_manager import EmailManager
 
 cfg = load_config()
 

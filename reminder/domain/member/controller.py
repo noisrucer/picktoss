@@ -2,13 +2,19 @@ from typing import Optional
 
 import requests
 from fastapi import APIRouter, Depends
+from fastapi.responses import RedirectResponse
 
 from reminder.config import load_config
 from reminder.dependency.db import DBSessionDep
-from reminder.domain.member.dependency import get_current_member_id, member_service
+from reminder.domain.member.dependency import get_current_member_id
+from reminder.container import member_service
 from reminder.domain.member.dtos import CallbackResponse
 from reminder.domain.member.entity import EMember
-from fastapi.responses import RedirectResponse
+from reminder.domain.member.response.get_member_info_response import (
+    GetMemberInfoResponse,
+)
+from reminder.container import subscription_service
+from reminder.domain.subscription.model import Subscription
 
 router = APIRouter(tags=["member"])
 
@@ -27,13 +33,15 @@ cfg = load_config()
 
 @router.get("/oauth/url")
 def oauth_url_api():
-    return {"oauth_url": f"https://accounts.google.com/o/oauth2/auth?client_id={cfg.oauth.client_id}&response_type=code&redirect_uri={cfg.oauth.redirect_uri}&scope=openid%20email%20profile"}
+    return {
+        "oauth_url": f"https://accounts.google.com/o/oauth2/auth?client_id={cfg.oauth.client_id}&response_type=code&redirect_uri={cfg.oauth.redirect_uri}&scope=openid%20email%20profile"
+    }
 
 
 @router.get("/callback")
 async def oauth_callback(session: DBSessionDep, code: Optional[str] = None) -> CallbackResponse:
     token = member_service.token_auth(code=code)
-    member_info = member_service.get_member_info(token["access_token"])
+    member_info = member_service.get_google_member_info(token["access_token"])
     access_token = member_service.create_access_token(member_info["id"])
 
     emember = EMember(id=member_info["id"], name=member_info["name"], email=member_info["email"])
@@ -48,3 +56,10 @@ async def oauth_callback(session: DBSessionDep, code: Optional[str] = None) -> C
 @router.get("/protected")
 def protect(current_user_id: str = Depends(get_current_member_id)):
     return {"current_user_id": current_user_id}
+
+
+@router.get("/members/info", response_model=GetMemberInfoResponse)
+async def get_member_info(
+    session: DBSessionDep, member_id: str = Depends(get_current_member_id)
+) -> GetMemberInfoResponse:
+    return await member_service.get_member_info(session, member_id)

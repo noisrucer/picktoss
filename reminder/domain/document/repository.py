@@ -4,10 +4,9 @@ from sqlalchemy.orm import Session
 
 from reminder.domain.category.model import Category
 from reminder.domain.document.entity import EDocument
-from reminder.domain.document.model import Document
+from reminder.domain.document.model import Document, DocumentUpload
 from reminder.domain.member.model import Member
 from reminder.domain.question.model import Question
-from reminder.domain.document.model import DocumentUpload
 
 
 class DocumentRepository:
@@ -40,7 +39,7 @@ class DocumentRepository:
 
         result = await session.execute(query)
         return result.scalars().first()
-    
+
     async def find_all_by_member_id(self, session: AsyncSession, member_id: str) -> list[Document]:
         query = (
             select(Document)
@@ -70,7 +69,7 @@ class DocumentUploadRepository:
         query = select(DocumentUpload).where(DocumentUpload.member_id == member_id)
         result = await session.execute(query)
         return result.scalars().fetchall()
-    
+
     async def save(self, session: AsyncSession, document_upload: DocumentUpload) -> int:
         session.add(document_upload)
         await session.commit()
