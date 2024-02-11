@@ -32,7 +32,7 @@ def handler(event, context):
 
     # Generate Questions
 
-    CHUNK_SIZE = 2000
+    CHUNK_SIZE = 1300
     chunks: list[str] = []
     for i in range(0, len(content), CHUNK_SIZE):
         chunks.append(content[i : i + CHUNK_SIZE])
@@ -85,7 +85,7 @@ def handler(event, context):
     # Generate Summary
     summary_input = ""
     for chunk in chunks:
-        summary_input += chunk[:500]
+        summary_input += chunk[:600]
         if len(summary_input) > 2000:
             break
 

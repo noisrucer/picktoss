@@ -89,7 +89,7 @@ def load_config() -> AppConfig:
         db_name=os.environ["REMINDER_DB_NAME"],
     )
 
-    openai_config = OpenAIConfig(api_key=os.environ["REMINDER_OPENAI_API_KEY"], model="gpt-3.5-turbo")
+    openai_config = OpenAIConfig(api_key=os.environ["REMINDER_OPENAI_API_KEY"], model="gpt-3.5-turbo-0125")
 
     aws_config = AWSConfig(
         access_key=os.environ["REMINDER_AWS_ACCESS_KEY"], secret_key=os.environ["REMINDER_AWS_SECRET_KEY"]
