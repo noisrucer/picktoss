@@ -128,7 +128,7 @@ class DocumentService:
 
         # 3. Send a message to SQS for Lambda LLM worker to consume
         # TODO: UNDO
-        # self.sqs_client.put({"s3_key": s3_key, "db_pk": document_id, "subscription_plan": str(plan_type.value)})
+        self.sqs_client.put({"s3_key": s3_key, "db_pk": document_id, "subscription_plan": str(plan_type.value)})
 
         return UploadDocumentResponse(id=document_id)
 
