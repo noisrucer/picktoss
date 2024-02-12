@@ -127,7 +127,6 @@ class DocumentService:
         document_upload_id = await self.document_upload_repository.save(session, document_upload)
 
         # 3. Send a message to SQS for Lambda LLM worker to consume
-        # TODO: UNDO
         self.sqs_client.put({"s3_key": s3_key, "db_pk": document_id, "subscription_plan": str(plan_type.value)})
 
         return UploadDocumentResponse(id=document_id)
