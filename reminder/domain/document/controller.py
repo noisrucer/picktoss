@@ -51,6 +51,6 @@ async def get_document(document_id: int, session: DBSessionDep, member_id: str =
     return await document_service.get_document_by_id(session, member_id, document_id)
 
 
-@router.delete("/documents/{document_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_document(document_id: int, session: DBSessionDep, member_id: str = Depends(get_current_member_id)):
-    await document_service.delete_document_by_id(session, member_id, document_id)
+# @router.delete("/documents/{document_id}", status_code=status.HTTP_204_NO_CONTENT)
+# async def delete_document(document_id: int, session: DBSessionDep, member_id: str = Depends(get_current_member_id)):
+#     await document_service.delete_document_by_id(session, member_id, document_id)
