@@ -18,8 +18,8 @@ logging.basicConfig(level=logging.INFO)
 def handler(event, context):
     body: str = event["Records"][0]["body"]
     body: dict = json.loads(body)
-    if "s3_key" not in body or "db_pk" not in body:
-        raise ValueError(f"s3_key and db_pk must be provided. event: {event}, context: {context}")
+    if "s3_key" not in body or "db_pk" not in body or 'subscription_plan' not in body:
+        raise ValueError(f"s3_key and db_pk and subscription_plan must be provided. event: {event}, context: {context}")
 
     s3_key = body["s3_key"]
     db_pk = int(body["db_pk"])
