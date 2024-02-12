@@ -26,6 +26,11 @@ class CategoryRepository:
         query = select(Category).where(Category.id == category_id and Category.member_id == member_id)
         result = await session.execute(query)
         return result.scalars().first()
+    
+    async def find_or_none_by_name(self, session: AsyncSession, member_id: str, name: str) -> Category | None:
+        query = select(Category).where(Category.name == name and Category.member_id == member_id)
+        result = await session.execute(query)
+        return result.scalars().first()
 
     async def update_category_by_id(self, session: AsyncSession, member_id: str, category_id: int, data: dict) -> None:
         query = select(Category).where(Category.id == category_id and Category.member_id == member_id)

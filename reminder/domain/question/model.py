@@ -14,11 +14,12 @@ class Question(Base, AuditBase):
     answer: Mapped[str] = mapped_column(Text, nullable=False)
     delivered_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     document_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("document.id", ondelete="CASCADE"), nullable=False)
+    # document_id: Mapped[int] = mapped_column(BigInteger, nullable=False) # manage FK at application level?
 
     # -- relationships
 
     # ManyToOne / Question(N) : Document(1)
-    document = relationship("Document", back_populates="questions", lazy="selectin")
+    document = relationship("Document", back_populates="questions", lazy="selectin", foreign_keys=[document_id])
 
     # OneToMany / Question(1) : QuestionQuestionSet(N)
     question_question_sets = relationship("QuestionQuestionSet", back_populates="question", lazy="selectin")
@@ -28,7 +29,7 @@ class QuestionQuestionSet(Base, AuditBase):
     __tablename__ = "question_question_set"
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True, index=True)
-    question_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("question.id"))  # ManyToOne
+    question_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("question.id", ondelete="CASCADE"))  # ManyToOne
     question_set_id: Mapped[str] = mapped_column(String(300), ForeignKey("question_set.id"))  # ManyToOne
 
     # -- relationships

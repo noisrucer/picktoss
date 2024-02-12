@@ -89,12 +89,12 @@ def create_app() -> FastAPI:
             await sessionmanager.close()
 
     app = FastAPI(title="peerloop server", description="peerloop server", version="0.1.0", lifespan=lifespan)
+    init_middlewares(app)
 
     @app.get("/health-check")
     async def health_check():
         return "I'm very healthy. Don't worry"
 
-    init_middlewares(app)
     init_exception_handlers(app)
     init_routers(app)
 

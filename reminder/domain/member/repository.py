@@ -36,7 +36,7 @@ class MemberRepository:
         return (await session.scalars(select(Member).where(Member.id == member_id))).first()
 
     async def get_member_by_id(self, session: AsyncSession, member_id: str) -> Member:
-        member = self.get_member_or_none_by_id(session, member_id)
+        member = await self.get_member_or_none_by_id(session, member_id)
         if member is None:
             raise MemberNotFoundError(member_id)
         return member

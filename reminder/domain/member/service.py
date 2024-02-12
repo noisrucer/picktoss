@@ -6,7 +6,7 @@ from jose import ExpiredSignatureError, jwt
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from reminder.config import load_config
-from reminder.domain.document.constant import get_max_document_num_by_subscription_plan
+from reminder.domain.document.constant import get_current_subscription_max_document_num_by_subscription_plan, get_anytime_max_document_num_by_subscription_plan
 from reminder.domain.document.service import DocumentService
 from reminder.domain.member.entity import EMember
 from reminder.domain.member.exceptions import InvalidTokenScopeError, JWTError
@@ -84,22 +84,28 @@ class MemberService:
         subscription: Subscription = await self.subscription_service.get_current_subscription_by_member_id(
             session, member_id
         )
-        used_document_num = (
+        current_subscription_uploaded_document_num = (
             await self.document_service.get_num_uploaded_documents_for_current_subscription_by_member_id(
                 session, member_id
             )
         )
+        current_uploaded_document_num = await self.document_service.get_num_current_uploaded_documents_by_member_id(session, member_id)
+        member = await self.member_repository.get_member_by_id(session, member_id)
+
         return GetMemberInfoResponse(
+            email=member.email,
             subscription=GetMemberInfoSubScriptionDto(
                 plan=subscription.plan_type,
                 purchasedDate=subscription.purchased_date,
                 expireDate=subscription.expire_date,
             ),
-            document=GetMemberInfoDocumentDto(
-                currentSubscriptionCycleTotalDocuments=get_max_document_num_by_subscription_plan(
+            documentUsage=GetMemberInfoDocumentDto(
+                currentSubscriptionCycleMaxDocumentNum=get_current_subscription_max_document_num_by_subscription_plan(
                     subscription.plan_type
                 ),
-                currentSubscriptionCycleUsedDocuments=used_document_num,
+                currentSubscriptionCycleUploadedDocumentNum=current_subscription_uploaded_document_num,
+                anytimeMaxDocumentNum=get_anytime_max_document_num_by_subscription_plan(subscription.plan_type),
+                currentUploadedDocumentNum=current_uploaded_document_num
             ),
         )
 

@@ -39,13 +39,18 @@ async def upload_document(
     return await document_service.upload_document(session=session, member_id=member_id, edocument=edocument)
 
 
-@router.get("/categories/{category_id}/documents", response_model=GetAllDocumentsByCategoryResponse)
+@router.get("/categories/{category_id}/documents", status_code=status.HTTP_200_OK, response_model=GetAllDocumentsByCategoryResponse)
 async def get_all_documents_by_category(
     category_id: int, session: DBSessionDep, member_id: str = Depends(get_current_member_id)
 ):
     return await document_service.get_all_documents_by_category(session, member_id, category_id)
 
 
-@router.get("/documents/{document_id}", response_model=GetDocumentResponse)
+@router.get("/documents/{document_id}", status_code=status.HTTP_200_OK, response_model=GetDocumentResponse)
 async def get_document(document_id: int, session: DBSessionDep, member_id: str = Depends(get_current_member_id)):
     return await document_service.get_document_by_id(session, member_id, document_id)
+
+
+@router.delete("/documents/{document_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_document(document_id: int, session: DBSessionDep, member_id: str = Depends(get_current_member_id)):
+    await document_service.delete_document_by_id(session, member_id, document_id)

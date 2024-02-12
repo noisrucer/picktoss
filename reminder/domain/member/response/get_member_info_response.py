@@ -12,10 +12,13 @@ class GetMemberInfoSubScriptionDto(BaseModel):
 
 
 class GetMemberInfoDocumentDto(BaseModel):
-    currentSubscriptionCycleTotalDocuments: int = Field(..., examples=[15])
-    currentSubscriptionCycleUsedDocuments: int = Field(..., examples=[7])
+    currentSubscriptionCycleMaxDocumentNum: int = Field(..., examples=[45], description="구독 기간 동안 업로드 할 수 있는 총 문서 개수")
+    currentSubscriptionCycleUploadedDocumentNum: int = Field(..., examples=[36], description="현재 구독 기간 동안 업로드한 문서 개수")
+    anytimeMaxDocumentNum: int = Field(..., examples=[15], description="매 시점 업로드 될 수 있는 최대 문서 개수.")
+    currentUploadedDocumentNum: int = Field(..., examples=[7], description="현재 업로드 된 문서 개수")
 
 
 class GetMemberInfoResponse(BaseModel):
+    email: str = Field(..., examples=["changjin9792@gmail.com"])
     subscription: GetMemberInfoSubScriptionDto = Field(...)
-    document: GetMemberInfoDocumentDto = Field(...)
+    documentUsage: GetMemberInfoDocumentDto = Field(...)

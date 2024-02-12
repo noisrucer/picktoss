@@ -29,9 +29,9 @@ class Document(Base, AuditBase):
     # OneToMany / document(1): question(N)
     questions = relationship("Question", back_populates="document", cascade="all, delete-orphan", lazy="selectin")
 
-    document_upload = relationship(
-        "DocumentUpload", back_populates="document", cascade="all, delete-orphan", lazy="selectin"
-    )
+    # document_upload = relationship(
+    #     "DocumentUpload", back_populates="document", cascade="all, delete-orphan", lazy="selectin"
+    # )
 
     def complete_process(self):
         self.status = DocumentStatus.PROCESSED
@@ -44,7 +44,7 @@ class DocumentUpload(Base):
     upload_date: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.utcnow)
     # N:1
     member_id: Mapped[str] = mapped_column(String(200), ForeignKey("member.id", ondelete="CASCADE"), nullable=False)
-    document_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("document.id", ondelete="CASCADE"), nullable=False)
+    document_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
 
     ## -- relationship
-    document = relationship("Document", back_populates="document_upload", lazy="selectin")
+    # document = relationship("Document", back_populates="document_upload", lazy="selectin")

@@ -65,6 +65,12 @@ class EmailConfig:
 
 
 @dataclass
+class DiscordConfig:
+    bot_token: str
+    channel_id: str
+
+
+@dataclass
 class AppConfig:
     db: DBConfig
     openai: OpenAIConfig
@@ -74,6 +80,7 @@ class AppConfig:
     jwt: JWTConfig
     sqs: SQSConfig
     email: EmailConfig
+    discord: DiscordConfig
 
 
 @lru_cache
@@ -116,6 +123,11 @@ def load_config() -> AppConfig:
         mailgun_api_key=os.environ["MAILGUN_API_KEY"], mailgun_domain=os.environ["MAILGUN_DOMAIN"]
     )
 
+    discord_config = DiscordConfig(
+        bot_token=os.environ["PICKTOSS_DISCORD_BOT_TOKEN"],
+        channel_id=os.environ["PICKTOSS_DISCORD_CHANNEL_ID"]
+    )
+
     app_config = AppConfig(
         db=db_config,
         openai=openai_config,
@@ -125,6 +137,7 @@ def load_config() -> AppConfig:
         oauth=oauth_config,
         jwt=jwt_config,
         email=email_config,
+        discord=discord_config
     )
 
     return app_config

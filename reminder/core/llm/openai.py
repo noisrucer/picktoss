@@ -3,6 +3,7 @@ from dataclasses import asdict, dataclass
 from typing import Literal
 
 from openai import AsyncOpenAI, OpenAI
+from reminder.core.llm.exception import InvalidLLMJsonResponseError
 
 from reminder.config import load_config
 
@@ -39,7 +40,6 @@ class OpenAIChatLLM:
         if self.model_kwargs["model"] == "gpt-3.5-turbo-0125":
             extra_params["response_format"] = {"type": "json_object"}
 
-        print(self.model_kwargs)
         resp = self.sync_client.chat.completions.create(
             messages=[asdict(message) for message in messages], **self.model_kwargs
         )
@@ -51,7 +51,7 @@ class OpenAIChatLLM:
         try:
             return json.loads(text)
         except json.JSONDecodeError:
-            return Exception("Invalid LLM JSON Response")
+            raise InvalidLLMJsonResponseError(llm_response=text)
 
 
 chat_llm = OpenAIChatLLM(api_key=cfg.openai.api_key, model=cfg.openai.model)

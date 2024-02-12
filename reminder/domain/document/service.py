@@ -9,15 +9,21 @@ from reminder.domain.category.exception import CategoryNotFoundError
 from reminder.domain.category.repository import CategoryRepository
 from reminder.domain.document.constant import (
     DOCUMENT_MAX_LEN,
+    DOCUMENT_MIN_LEN,
     FREE_PLAN_MONTHLY_MAX_DOCUMENT_NUM,
     PRO_PLAN_MONTHLY_MAX_DOCUMENT_NUM,
+    FREE_PLAN_CURRENT_MAX_DOCUMENT_NUM,
+    PRO_PLAN_CURRENT_MAX_DOCUMENT_NUM
 )
 from reminder.domain.document.entity import EDocument
 from reminder.domain.document.exception import (
     DocumentMaxLengthExceedError,
+    DocumentMinLengthError,
     DocumentNotFoundError,
-    FreePlanDocumentUploadLimitExceedError,
-    ProPlanDocumentUploadLimitExceedError,
+    FreePlanCurrentSubscriptionDocumentUploadLimitExceedError,
+    ProPlanCurrentSubscriptionDocumentUploadLimitExceedError,
+    FreePlanAnytimeDocumentUploadLimitExceedError,
+    ProPlanAnytimeDocumentUploadLimitExceedError
 )
 from reminder.domain.document.model import Document, DocumentUpload
 from reminder.domain.document.repository import (
@@ -70,6 +76,11 @@ class DocumentService:
         current_subscription: Subscription = await self.subscription_service.get_current_subscription_by_member_id(
             session, member_id
         )
+
+        # 현재 시점에 업로드된 문서 개수: (제한 - Free: 3개, Pro: 15개)
+        current_num_uploaded_documents: int = await self.get_num_current_uploaded_documents_by_member_id(session, member_id)
+
+        # 현재 구독 사이클에 업로드한 문서 개수: (제한 - Free: 15개, Pro: 40개)
         current_subscription_num_uploaded_documents: int = (
             await self.get_num_uploaded_documents_for_current_subscription_by_member_id(session, member_id)
         )
@@ -77,17 +88,24 @@ class DocumentService:
 
         assert isinstance(plan_type, SubscriptionPlanType)
         if plan_type == SubscriptionPlanType.FREE:
-            if current_subscription_num_uploaded_documents >= FREE_PLAN_MONTHLY_MAX_DOCUMENT_NUM:
-                raise FreePlanDocumentUploadLimitExceedError()
+            if current_subscription_num_uploaded_documents >= FREE_PLAN_MONTHLY_MAX_DOCUMENT_NUM: # 15개
+                raise FreePlanCurrentSubscriptionDocumentUploadLimitExceedError()
+            if current_num_uploaded_documents >= FREE_PLAN_CURRENT_MAX_DOCUMENT_NUM: # 매 시점: 3개
+                raise FreePlanAnytimeDocumentUploadLimitExceedError()
         elif plan_type == SubscriptionPlanType.PRO:
-            if current_subscription_num_uploaded_documents >= PRO_PLAN_MONTHLY_MAX_DOCUMENT_NUM:
-                raise ProPlanDocumentUploadLimitExceedError()
+            if current_subscription_num_uploaded_documents >= PRO_PLAN_MONTHLY_MAX_DOCUMENT_NUM: # 40개
+                raise ProPlanCurrentSubscriptionDocumentUploadLimitExceedError()
+            if current_num_uploaded_documents >= PRO_PLAN_CURRENT_MAX_DOCUMENT_NUM: # 매 시점: 15개
+                raise ProPlanAnytimeDocumentUploadLimitExceedError()
         else:
             raise ValueError("Invalid Plan Type")
 
         # Ensure document max size limit (15,000 characters)
         if len(edocument.decode_contenet_str()) >= DOCUMENT_MAX_LEN:
             raise DocumentMaxLengthExceedError()
+        
+        if len(edocument.decode_contenet_str()) < DOCUMENT_MIN_LEN:
+            raise DocumentMinLengthError()
 
         # Ensure Category exists
         category_id = edocument.category_id
@@ -109,7 +127,8 @@ class DocumentService:
         document_upload_id = await self.document_upload_repository.save(session, document_upload)
 
         # 3. Send a message to SQS for Lambda LLM worker to consume
-        self.sqs_client.put({"s3_key": s3_key, "db_pk": document_id, "subscription_plan": str(plan_type.value)})
+        # TODO: UNDO
+        # self.sqs_client.put({"s3_key": s3_key, "db_pk": document_id, "subscription_plan": str(plan_type.value)})
 
         return UploadDocumentResponse(id=document_id)
 
@@ -156,6 +175,9 @@ class DocumentService:
             ],
             content=content,
         )
+    
+    async def delete_document_by_id(self, session: AsyncSession, member_id: str, document_id: int) -> None:
+        await self.document_repository.delete_by_member_id_and_id(session, member_id, document_id)
 
     async def get_num_uploaded_documents_for_current_subscription_by_member_id(
         self, session: AsyncSession, member_id: str
@@ -175,3 +197,11 @@ class DocumentService:
         ]
 
         return len(current_subscription_document_uploads)
+    
+    async def get_num_current_uploaded_documents_by_member_id(
+        self, session: AsyncSession, member_id: str
+    ) -> int:
+        """현재 업로드된 문서 개수
+        """
+        documents = await self.document_repository.find_all_by_member_id(session, member_id)
+        return len(documents)

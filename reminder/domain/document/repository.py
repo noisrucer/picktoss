@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
 
@@ -49,6 +49,13 @@ class DocumentRepository:
         )
         result = await session.execute(query)
         return result.scalars().fetchall()
+    
+    async def delete_by_member_id_and_id(self, session: AsyncSession, member_id: str, document_id: int) -> None:
+        document = await self.find_by_id(session, member_id, document_id)
+        if document is None:
+            return
+        await session.delete(document)
+        await session.commit()
 
     def sync_find_by_id(self, session: Session, document_id: int) -> Document:
         return session.scalars(select(Document).where(Document.id == document_id)).first()

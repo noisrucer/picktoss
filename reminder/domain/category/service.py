@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio.session import AsyncSession
 
-from reminder.domain.category.exception import CategoryNotFoundError
+from reminder.domain.category.exception import CategoryNotFoundError, DuplicateCategoryNameError
 from reminder.domain.category.model import Category
 from reminder.domain.category.repository import CategoryRepository
 from reminder.domain.category.response.create_category_response import (
@@ -17,6 +17,11 @@ class CategoryService:
         self.category_repostiory = category_repostiory
 
     async def create_category(self, session: AsyncSession, member_id: str, name: str) -> CreateCategoryResponse:
+        # Check duplicating category name
+        category = await self.category_repostiory.find_or_none_by_name(session, member_id, name)
+        if category:
+            raise DuplicateCategoryNameError(name)
+
         category_id = await self.category_repostiory.creat_category(session, member_id, name)
         return CreateCategoryResponse(id=category_id)
 
