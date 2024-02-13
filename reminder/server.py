@@ -17,6 +17,8 @@ from reminder.domain.question.controller import router as question_router
 from reminder.domain.question.model import Question, QuestionQuestionSet, QuestionSet
 from reminder.domain.subscription.controller import router as subscription_router
 from reminder.domain.subscription.model import Subscription
+from reminder.domain.feedback.controller import router as feedback_router
+from reminder.domain.payment.controller import router as payment_router
 
 
 def init_exception_handlers(app: FastAPI) -> None:
@@ -55,6 +57,8 @@ def init_routers(app: FastAPI) -> None:
     app.include_router(category_router, prefix="/api/v1")
     app.include_router(question_router, prefix="/api/v1")
     app.include_router(subscription_router, prefix="/api/v1")
+    app.include_router(feedback_router, prefix="/api/v1")
+    app.include_router(payment_router, prefix="/api/v1")
 
 
 def init_middlewares(app: FastAPI) -> None:
