@@ -48,7 +48,7 @@ async def oauth_callback(session: DBSessionDep, code: Optional[str] = None) -> C
 
     await member_service.verify_member(session=session, emember=emember)
 
-    return RedirectResponse(f"http://localhost:5173/oauth?access-token={access_token}")
+    return RedirectResponse(f"{cfg.oauth.callback_response_redirect_host}/oauth?access-token={access_token}")
     # return RedirectResponse(f"https://pick-toss.vercel.app/oauth?access-token={access_token}")
     # return CallbackResponse(access_token=access_token, token_type="Bearer")
 

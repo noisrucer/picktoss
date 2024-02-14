@@ -28,9 +28,6 @@ class S3Client:
 
         self.client.put_object(**params)
 
-    # def upload_string_obj(self, obj_str: str, key: str, metadata: dict | None = None) -> None:
-    #     self.upload_bytes_obj(obj_str.encode(), key, metadata)
-
     def get_object(self, key: str) -> BucketObject:
         file_obj = self.client.get_object(Bucket=self.bucket_name, Key=key)
         content_bytes: bytes = file_obj["Body"].read()

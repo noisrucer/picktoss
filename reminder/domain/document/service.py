@@ -101,7 +101,7 @@ class DocumentService:
             raise ValueError("Invalid Plan Type")
 
         # Ensure document max size limit (15,000 characters)
-        if len(edocument.decode_contenet_str()) >= DOCUMENT_MAX_LEN:
+        if len(edocument.decode_contenet_str()) > DOCUMENT_MAX_LEN:
             raise DocumentMaxLengthExceedError()
         
         if len(edocument.decode_contenet_str()) < DOCUMENT_MIN_LEN:

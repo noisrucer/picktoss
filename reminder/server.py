@@ -17,6 +17,9 @@ from reminder.domain.question.controller import router as question_router
 from reminder.domain.question.model import Question, QuestionQuestionSet, QuestionSet
 from reminder.domain.subscription.controller import router as subscription_router
 from reminder.domain.subscription.model import Subscription
+from reminder.config import load_config
+
+cfg = load_config()
 
 
 def init_exception_handlers(app: FastAPI) -> None:
@@ -58,7 +61,7 @@ def init_routers(app: FastAPI) -> None:
 
 
 def init_middlewares(app: FastAPI) -> None:
-    origins = ["http://localhost:5173"]
+    origins = [f"{cfg.cors_allowed_origin}"]
     app.add_middleware(
         CORSMiddleware,
         allow_origins=origins,

@@ -11,4 +11,4 @@ class SQSClient:
         self.queue_url = queue_url
 
     def put(self, data: dict) -> None:
-        self.client.send_message(QueueUrl=self.queue_url, MessageBody=json.dumps(data))
+        self.client.send_message(QueueUrl=self.queue_url, MessageBody=json.dumps(data), MessageGroupId="abc")

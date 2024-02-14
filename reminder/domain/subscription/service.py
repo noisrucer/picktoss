@@ -13,7 +13,7 @@ class SubscriptionService:
         self.subscription_repository = subscription_repository
 
     async def get_current_subscription_by_member_id(self, session: AsyncSession, member_id: str) -> Subscription:
-        # Get all subscription histories for a member
+        # Get all subscription histories for a ㅈmember
         subscriptions: list[Subscription] = await self.subscription_repository.find_all_by_member_id(session, member_id)
 
         # Find the latest subscription by purchased_date

@@ -34,7 +34,7 @@ def handler(event, context):
 
     # Generate Questions
 
-    CHUNK_SIZE = 1400
+    CHUNK_SIZE = 1500
     chunks: list[str] = []
     for i in range(0, len(content), CHUNK_SIZE):
         chunks.append(content[i : i + CHUNK_SIZE])
@@ -184,3 +184,4 @@ def handler(event, context):
 # handler(event={
 #     "Records": [{"body": sample_body}]
 # }, context=None)
+
