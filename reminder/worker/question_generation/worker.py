@@ -49,9 +49,6 @@ def handler(event, context):
     failed_at_least_once = False
 
     for chunk in chunks:
-        # TODO: RESTORE TO NORMAL
-        if total_generated_question_count == 5:
-            break
         messages = fill_message_placeholders(messages=without_placeholder_messages, placeholders={"note": chunk})
         try:
             resp_dict = chat_llm.predict_json(messages)
@@ -80,9 +77,6 @@ def handler(event, context):
         try:
             for q_set in resp_dict:
                 question, answer = q_set["question"], q_set["answer"]
-                # TODO: RESTORE TO NORMAL
-                if total_generated_question_count == 5:
-                    break
                 total_generated_question_count += 1
 
                 if subscription_plan == SubscriptionPlanType.FREE.value:
