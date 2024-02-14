@@ -95,6 +95,7 @@ def load_config() -> AppConfig:
         password=os.environ["PICKTOSS_DB_PASSWORD"],
         db_name=os.environ["PICKTOSS_DB_NAME"],
     )
+    print(os.environ["PICKTOSS_AWS_SQS_QUEUE_URL"])
 
     openai_config = OpenAIConfig(api_key=os.environ["PICKTOSS_OPENAI_API_KEY"], model="gpt-3.5-turbo-0125")
 

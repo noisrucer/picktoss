@@ -32,7 +32,7 @@ on:
 
 env:
   AWS_REGION: ap-northeast-1                   # set this to your preferred AWS region, e.g. us-west-1
-  ECR_REPOSITORY: reminder           # set this to your Amazon ECR repository name
+  ECR_REPOSITORY: picktoss-question-generation-worker-prod           # set this to your Amazon ECR repository name
   IMAGE_TAG: ${{ github.sha }}
 
 permissions:
