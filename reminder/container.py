@@ -15,6 +15,12 @@ from reminder.domain.question.service import QuestionService
 from reminder.domain.subscription.service import SubscriptionService
 from reminder.domain.subscription.repository import SubscriptionRepository
 
+from reminder.domain.feedback.service import FeedbackService
+from reminder.domain.feedback.repository import FeedbackRepository
+
+from reminder.domain.payment.service import PaymentService
+from reminder.domain.payment.repository import PaymentRepository
+
 
 subscription_repository = SubscriptionRepository()
 category_repository = CategoryRepository()
@@ -24,6 +30,8 @@ question_question_set_repository = QuestionQuestionSetRepository()
 document_repository = DocumentRepository()
 document_upload_repository = DocumentUploadRepository()
 member_repository = MemberRepository()
+feedback_repository = FeedbackRepository()
+payment_repository = PaymentRepository()
 
 subscription_service = SubscriptionService(subscription_repository=subscription_repository)
 question_service = QuestionService(
@@ -50,4 +58,12 @@ member_service = MemberService(
     subscription_repository=subscription_repository,
     subscription_service=subscription_service,
     document_service=document_service
+)
+
+feedback_service = FeedbackService(
+    feedback_repository=feedback_repository
+)
+
+payment_repository = PaymentService(
+    payment_repository=payment_repository
 )
