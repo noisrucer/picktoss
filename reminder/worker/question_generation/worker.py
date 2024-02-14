@@ -80,7 +80,7 @@ def handler(event, context):
                 total_generated_question_count += 1
 
                 if subscription_plan == SubscriptionPlanType.FREE.value:
-                    if free_plan_question_expose_count >= 3:
+                    if free_plan_question_expose_count >= 5:
                         delivered_count = 0
                     else:
                         delivered_count = 1
