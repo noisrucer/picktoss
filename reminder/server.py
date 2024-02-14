@@ -17,14 +17,10 @@ from reminder.domain.question.controller import router as question_router
 from reminder.domain.question.model import Question, QuestionQuestionSet, QuestionSet
 from reminder.domain.subscription.controller import router as subscription_router
 from reminder.domain.subscription.model import Subscription
-<<<<<<< HEAD
 from reminder.config import load_config
-
-cfg = load_config()
-=======
 from reminder.domain.feedback.controller import router as feedback_router
 from reminder.domain.payment.controller import router as payment_router
->>>>>>> origin/main
+cfg = load_config()
 
 
 def init_exception_handlers(app: FastAPI) -> None:
