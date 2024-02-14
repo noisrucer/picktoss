@@ -89,8 +89,6 @@ class AppConfig:
 def load_config() -> AppConfig:
     load_dotenv(".env")
 
-    os.environ['PICKTOSS_DB_NAME'] = "picktoss_prod"
-
     db_config = DBConfig(
         host=os.environ["PICKTOSS_DB_HOST"],
         username=os.environ["PICKTOSS_DB_USER"],
