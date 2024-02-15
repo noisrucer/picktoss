@@ -129,5 +129,6 @@ innerFunc 함수를 포함하는 외부 함수 outerFunc의 스코프(함수 out
 
 The number of generated question set must be 2 ~ 4.
 And the format must be JSON. Be careful about the format. especially the brackets and the comma.
+한국어로 대답하세요.
 
-Your answer:
+응답:
