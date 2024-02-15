@@ -16,12 +16,14 @@ from reminder.domain.member.response.get_member_info_response import (
     GetMemberInfoDocumentDto,
     GetMemberInfoResponse,
     GetMemberInfoSubScriptionDto,
+    GetMemberInfoQuizDto
 )
 from reminder.domain.subscription.enum import SubscriptionPlanType
 from reminder.domain.subscription.model import Subscription
 from reminder.domain.subscription.repository import SubscriptionRepository
 from reminder.domain.subscription.service import SubscriptionService
 from reminder.domain.document.constant import FREE_PLAN_CURRENT_MAX_DOCUMENT_NUM, FREE_PLAN_MONTHLY_MAX_DOCUMENT_NUM, PRO_PLAN_CURRENT_MAX_DOCUMENT_NUM, PRO_PLAN_MONTHLY_MAX_DOCUMENT_NUM
+from reminder.domain.question.constant import FREE_PLAN_QUIZ_QUESTION_NUM, PRO_PLAN_QUIZ_QUESTION_NUM
 
 cfg = load_config()
 
@@ -107,6 +109,10 @@ class MemberService:
                 freePlanSubscriptionMaxUploadDocumentNum=FREE_PLAN_MONTHLY_MAX_DOCUMENT_NUM,
                 proPlanMaxPossessDocumentNum=PRO_PLAN_CURRENT_MAX_DOCUMENT_NUM,
                 proPlanSubscriptionMaxUploadDocumentNum=PRO_PLAN_MONTHLY_MAX_DOCUMENT_NUM
+            ),
+            quiz=GetMemberInfoQuizDto(
+                freePlanQuizQuestionNum=FREE_PLAN_QUIZ_QUESTION_NUM,
+                proPlanQuizQuestionNum=PRO_PLAN_QUIZ_QUESTION_NUM
             )
         )
 

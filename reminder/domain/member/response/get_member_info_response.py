@@ -25,7 +25,14 @@ class GetMemberInfoDocumentDto(BaseModel):
     proPlanSubscriptionMaxUploadDocumentNum: int = Field(..., examples=[50], description="Pro 플랜 구독 기간 최대 업로드 문서 개수")
 
 
+
+class GetMemberInfoQuizDto(BaseModel):
+    freePlanQuizQuestionNum: int = Field(..., examples=[3])
+    proPlanQuizQuestionNum: int = Field(..., examples=[10])
+
+
 class GetMemberInfoResponse(BaseModel):
     email: str = Field(..., examples=["changjin9792@gmail.com"])
     subscription: GetMemberInfoSubScriptionDto = Field(...)
     documentUsage: GetMemberInfoDocumentDto = Field(...)
+    quiz: GetMemberInfoQuizDto = Field(...)

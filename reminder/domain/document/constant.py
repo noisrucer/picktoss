@@ -8,8 +8,8 @@ FREE_PLAN_MONTHLY_MAX_DOCUMENT_NUM = 15
 PRO_PLAN_MONTHLY_MAX_DOCUMENT_NUM = 40
 
 # 매 시점에 업로드될 수 있는 문서 최대 개수
-FREE_PLAN_CURRENT_MAX_DOCUMENT_NUM = 3
-PRO_PLAN_CURRENT_MAX_DOCUMENT_NUM = 15
+FREE_PLAN_CURRENT_MAX_DOCUMENT_NUM = 10
+PRO_PLAN_CURRENT_MAX_DOCUMENT_NUM = 40
 
 
 def get_current_subscription_max_document_num_by_subscription_plan(plan: SubscriptionPlanType) -> int:
