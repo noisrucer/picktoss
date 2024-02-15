@@ -86,7 +86,6 @@ def handler(event, context):
                 # TODO: UNDO
                 # if current_question_num == 5:
                 #     break
-                current_question_num += 1
 
                 question, answer = q_set["question"], q_set["answer"]
                 total_generated_question_count += 1
