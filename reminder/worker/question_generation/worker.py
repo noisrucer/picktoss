@@ -47,8 +47,15 @@ def handler(event, context):
 
     success_at_least_once = False
     failed_at_least_once = False
+    
+    # TODO: UNDO
+    current_question_num = 0
+    max_flag = False
 
     for chunk in chunks:
+        # TODO: UNDO
+        if current_question_num == 5:
+            break
         messages = fill_message_placeholders(messages=without_placeholder_messages, placeholders={"note": chunk})
         try:
             resp_dict = chat_llm.predict_json(messages)
@@ -76,6 +83,11 @@ def handler(event, context):
         
         try:
             for q_set in resp_dict:
+                # TODO: UNDO
+                if current_question_num == 5:
+                    break
+                current_question_num += 1
+
                 question, answer = q_set["question"], q_set["answer"]
                 total_generated_question_count += 1
 
