@@ -12,10 +12,17 @@ class GetMemberInfoSubScriptionDto(BaseModel):
 
 
 class GetMemberInfoDocumentDto(BaseModel):
-    currentSubscriptionCycleMaxDocumentNum: int = Field(..., examples=[45], description="구독 기간 동안 업로드 할 수 있는 총 문서 개수")
+    # 현재
+    currentPossessDocumentNum: int = Field(..., examples=[7], description="현재 업로드 된 문서 개수")
     currentSubscriptionCycleUploadedDocumentNum: int = Field(..., examples=[36], description="현재 구독 기간 동안 업로드한 문서 개수")
-    anytimeMaxDocumentNum: int = Field(..., examples=[15], description="매 시점 업로드 될 수 있는 최대 문서 개수.")
-    currentUploadedDocumentNum: int = Field(..., examples=[7], description="현재 업로드 된 문서 개수")
+
+    # Free
+    freePlanMaxPossessDocumentNum: int = Field(..., examples=[7], description="Free 플랜 최대 문서 보유 개수")
+    freePlanSubscriptionMaxUploadDocumentNum: int = Field(..., examples=[30], description="Free 플랜 구독 기간 최대 업로드 문서 개수") 
+
+    # Pro
+    proPlanMaxPossessDocumentNum: int = Field(..., examples=[20], description="Pro 플랜 최대 문서 보유 개수")
+    proPlanSubscriptionMaxUploadDocumentNum: int = Field(..., examples=[50], description="Pro 플랜 구독 기간 최대 업로드 문서 개수")
 
 
 class GetMemberInfoResponse(BaseModel):

@@ -21,6 +21,7 @@ from reminder.domain.subscription.enum import SubscriptionPlanType
 from reminder.domain.subscription.model import Subscription
 from reminder.domain.subscription.repository import SubscriptionRepository
 from reminder.domain.subscription.service import SubscriptionService
+from reminder.domain.document.constant import FREE_PLAN_CURRENT_MAX_DOCUMENT_NUM, FREE_PLAN_MONTHLY_MAX_DOCUMENT_NUM, PRO_PLAN_CURRENT_MAX_DOCUMENT_NUM, PRO_PLAN_MONTHLY_MAX_DOCUMENT_NUM
 
 cfg = load_config()
 
@@ -100,13 +101,13 @@ class MemberService:
                 expireDate=subscription.expire_date,
             ),
             documentUsage=GetMemberInfoDocumentDto(
-                currentSubscriptionCycleMaxDocumentNum=get_current_subscription_max_document_num_by_subscription_plan(
-                    subscription.plan_type
-                ),
+                currentPossessDocumentNum=current_uploaded_document_num,
                 currentSubscriptionCycleUploadedDocumentNum=current_subscription_uploaded_document_num,
-                anytimeMaxDocumentNum=get_anytime_max_document_num_by_subscription_plan(subscription.plan_type),
-                currentUploadedDocumentNum=current_uploaded_document_num
-            ),
+                freePlanMaxPossessDocumentNum=FREE_PLAN_CURRENT_MAX_DOCUMENT_NUM,
+                freePlanSubscriptionMaxUploadDocumentNum=FREE_PLAN_MONTHLY_MAX_DOCUMENT_NUM,
+                proPlanMaxPossessDocumentNum=PRO_PLAN_CURRENT_MAX_DOCUMENT_NUM,
+                proPlanSubscriptionMaxUploadDocumentNum=PRO_PLAN_MONTHLY_MAX_DOCUMENT_NUM
+            )
         )
 
     def create_access_token(self, sub: str | int):
