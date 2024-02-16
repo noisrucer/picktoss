@@ -22,7 +22,9 @@ class Question(Base, AuditBase):
     document = relationship("Document", back_populates="questions", lazy="selectin", foreign_keys=[document_id])
 
     # OneToMany / Question(1) : QuestionQuestionSet(N)
-    question_question_sets = relationship("QuestionQuestionSet", back_populates="question", cascade="all, delete-orphan", lazy="selectin")
+    question_question_sets = relationship(
+        "QuestionQuestionSet", back_populates="question", cascade="all, delete-orphan", lazy="selectin"
+    )
 
 
 class QuestionQuestionSet(Base, AuditBase):
@@ -31,7 +33,9 @@ class QuestionQuestionSet(Base, AuditBase):
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True, index=True)
     question_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("question.id", ondelete="CASCADE"))  # ManyToOne
     # question_set_id: Mapped[str] = mapped_column(String(300))  # ManyToOne
-    question_set_id: Mapped[str] = mapped_column(String(300), ForeignKey("question_set.id", ondelete="CASCADE"))  # ManyToOne
+    question_set_id: Mapped[str] = mapped_column(
+        String(300), ForeignKey("question_set.id", ondelete="CASCADE")
+    )  # ManyToOne
 
     # -- relationships
 

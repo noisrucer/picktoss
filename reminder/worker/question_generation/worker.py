@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO)
 def handler(event, context):
     body: str = event["Records"][0]["body"]
     body: dict = json.loads(body)
-    if "s3_key" not in body or "db_pk" not in body or 'subscription_plan' not in body:
+    if "s3_key" not in body or "db_pk" not in body or "subscription_plan" not in body:
         raise ValueError(f"s3_key and db_pk and subscription_plan must be provided. event: {event}, context: {context}")
 
     s3_key = body["s3_key"]
@@ -35,7 +35,7 @@ def handler(event, context):
 
     # Generate Questions
 
-    CHUNK_SIZE = 1500
+    CHUNK_SIZE = 1300
     chunks: list[str] = []
     for i in range(0, len(content), CHUNK_SIZE):
         chunks.append(content[i : i + CHUNK_SIZE])
@@ -48,7 +48,7 @@ def handler(event, context):
 
     success_at_least_once = False
     failed_at_least_once = False
-    
+
     # TODO: UNDO
     # current_question_num = 0
     # max_flag = False
@@ -67,7 +67,7 @@ def handler(event, context):
                 document_content=chunk,
                 llm_response=e.llm_response,
                 error_message="LLM Response is not JSON-decodable",
-                info=f"* s3_key: `{s3_key}`\n* document_id: `{db_pk}`"
+                info=f"* s3_key: `{s3_key}`\n* document_id: `{db_pk}`",
             )
             failed_at_least_once = True
             continue
@@ -77,11 +77,11 @@ def handler(event, context):
                 error_type=LLMErrorType.GENERAL,
                 document_content=chunk,
                 error_message="Failed to generate questions",
-                info=f"* s3_key: `{s3_key}`\n* document_id: `{db_pk}`"
+                info=f"* s3_key: `{s3_key}`\n* document_id: `{db_pk}`",
             )
             failed_at_least_once = True
             continue
-        
+
         try:
             for q_set in resp_dict:
                 # TODO: UNDO
@@ -112,7 +112,7 @@ def handler(event, context):
                 error_type=LLMErrorType.GENERAL,
                 document_content=chunk,
                 error_message=f"LLM Response is JSON decodable but does not have 'question' and 'answer' keys.\nresp_dict: {resp_dict}",
-                info=f"* s3_key: `{s3_key}`\n* document_id: `{db_pk}`"
+                info=f"* s3_key: `{s3_key}`\n* document_id: `{db_pk}`",
             )
             failed_at_least_once = True
             continue
@@ -122,7 +122,6 @@ def handler(event, context):
         # Save generated question sets to database
         question_repository.sync_save_all(session, question_models)
         question_models = []
-
 
     document = document_repository.sync_find_by_id(session, db_pk)
 
@@ -135,7 +134,7 @@ def handler(event, context):
     # Failed at least one chunk question generation
     if failed_at_least_once:
         document.status = DocumentStatus.PARTIAL_SUCCESS
-    else: # ALL successful
+    else:  # ALL successful
         document.status = DocumentStatus.PROCESSED
 
     session.commit()
@@ -166,7 +165,7 @@ def handler(event, context):
             document_content=summary_input,
             llm_response=e.llm_response,
             error_message="LLM Response is not JSON-decodable",
-            info=f"* s3_key: `{s3_key}`\n* document_id: `{db_pk}`"
+            info=f"* s3_key: `{s3_key}`\n* document_id: `{db_pk}`",
         )
         return
     except Exception as e:
@@ -175,7 +174,7 @@ def handler(event, context):
             error_type=LLMErrorType.GENERAL,
             document_content=summary_input,
             error_message="Failed to generate questions",
-            info=f"* s3_key: `{s3_key}`\n* document_id: `{db_pk}`"
+            info=f"* s3_key: `{s3_key}`\n* document_id: `{db_pk}`",
         )
         return
     document.summary = summary
@@ -190,4 +189,3 @@ def handler(event, context):
 # handler(event={
 #     "Records": [{"body": sample_body}]
 # }, context=None)
-

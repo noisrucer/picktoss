@@ -20,9 +20,11 @@ from reminder.domain.member.dependency import get_current_member_id
 
 router = APIRouter(tags=["Category"])
 
+
 @router.get("/hello", status_code=status.HTTP_200_OK)
 async def hello():
     return {"hello": hello}
+
 
 @router.post("/categories", status_code=status.HTTP_201_CREATED, response_model=CreateCategoryResponse)
 async def create_category(

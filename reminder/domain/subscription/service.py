@@ -36,7 +36,7 @@ class SubscriptionService:
             await self.subscription_repository.save(session, latest_subscription)
 
         return latest_subscription
-    
+
     def sync_get_current_subscription_by_member_id(self, session: Session, member_id: str) -> Subscription:
         # Get all subscription histories for a member
         subscriptions: list[Subscription] = self.subscription_repository.sync_find_all_by_member_id(session, member_id)
@@ -61,4 +61,3 @@ class SubscriptionService:
             self.subscription_repository.sync_save(session, latest_subscription)
 
         return latest_subscription
-

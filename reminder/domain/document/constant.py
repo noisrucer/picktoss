@@ -21,7 +21,7 @@ def get_current_subscription_max_document_num_by_subscription_plan(plan: Subscri
         return PRO_PLAN_MONTHLY_MAX_DOCUMENT_NUM
     else:
         raise ValueError("Invalid subscription plan type")
-    
+
 
 def get_anytime_max_document_num_by_subscription_plan(plan: SubscriptionPlanType) -> int:
     assert isinstance(plan, SubscriptionPlanType)

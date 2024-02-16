@@ -102,7 +102,7 @@ def load_config() -> AppConfig:
         access_key=os.environ["PICKTOSS_AWS_ACCESS_KEY"], secret_key=os.environ["PICKTOSS_AWS_SECRET_KEY"]
     )
 
-    s3_config = S3Config(region_name="ap-northeast-1", bucket_name=os.environ['PICKTOSS_S3_BUCKET_NAME'])
+    s3_config = S3Config(region_name="ap-northeast-1", bucket_name=os.environ["PICKTOSS_S3_BUCKET_NAME"])
 
     sqs_config = SQSConfig(region_name="ap-northeast-1", queue_url=os.environ["PICKTOSS_AWS_SQS_QUEUE_URL"])
 
@@ -110,7 +110,7 @@ def load_config() -> AppConfig:
         client_id=os.environ["PICKTOSS_OAUTH_CLIENT_ID"],
         redirect_uri=os.environ["PICKTOSS_OAUTH_REDIRECT_URI"],
         client_secret=os.environ["PICKTOSS_OAUTH_CLIENT_SECRET"],
-        callback_response_redirect_host=os.environ["PICKTOSS_OAUTH_CALLBACK_RESPONSE_REDIRECT_HOST"]
+        callback_response_redirect_host=os.environ["PICKTOSS_OAUTH_CALLBACK_RESPONSE_REDIRECT_HOST"],
     )
 
     jwt_config = JWTConfig(
@@ -125,8 +125,7 @@ def load_config() -> AppConfig:
     )
 
     discord_config = DiscordConfig(
-        bot_token=os.environ["PICKTOSS_DISCORD_BOT_TOKEN"],
-        channel_id=os.environ["PICKTOSS_DISCORD_CHANNEL_ID"]
+        bot_token=os.environ["PICKTOSS_DISCORD_BOT_TOKEN"], channel_id=os.environ["PICKTOSS_DISCORD_CHANNEL_ID"]
     )
 
     app_config = AppConfig(
@@ -139,7 +138,8 @@ def load_config() -> AppConfig:
         jwt=jwt_config,
         email=email_config,
         discord=discord_config,
-        cors_allowed_origin=os.environ["PICKTOSS_CORS_ALLOWED_ORIGIN"]
+        cors_allowed_origin=os.environ["PICKTOSS_CORS_ALLOWED_ORIGIN"],
     )
 
     return app_config
+

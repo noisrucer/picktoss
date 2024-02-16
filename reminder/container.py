@@ -57,13 +57,9 @@ member_service = MemberService(
     member_repository=member_repository,
     subscription_repository=subscription_repository,
     subscription_service=subscription_service,
-    document_service=document_service
+    document_service=document_service,
 )
 
-feedback_service = FeedbackService(
-    feedback_repository=feedback_repository
-)
+feedback_service = FeedbackService(feedback_repository=feedback_repository)
 
-payment_repository = PaymentService(
-    payment_repository=payment_repository
-)
+payment_repository = PaymentService(payment_repository=payment_repository)
