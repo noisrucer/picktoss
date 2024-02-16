@@ -11,6 +11,7 @@ from reminder.container import document_repository, question_repository
 from reminder.core.llm.exception import InvalidLLMJsonResponseError
 from reminder.core.discord.discord_client import discord_client, LLMErrorType
 from reminder.domain.document.enum import DocumentStatus
+from reminder.domain.question.constant import FREE_PLAN_QUIZ_QUESTION_NUM
 
 logging.basicConfig(level=logging.INFO)
 
@@ -91,7 +92,7 @@ def handler(event, context):
                 total_generated_question_count += 1
 
                 if subscription_plan == SubscriptionPlanType.FREE.value:
-                    if free_plan_question_expose_count >= 5:
+                    if free_plan_question_expose_count >= FREE_PLAN_QUIZ_QUESTION_NUM:
                         delivered_count = 0
                     else:
                         delivered_count = 1

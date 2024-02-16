@@ -17,7 +17,7 @@ class EmailManager:
     def read_and_format_html(
         self,
         replacements: dict[str, str],
-        html_path: str = "reminder/core/email/verification_template.html",
+        html_path: str = "reminder/core/email/quiz_email_template.html",
     ) -> str:
         f = open(html_path, "rt", encoding="UTF8")
         content = f.read()
