@@ -7,7 +7,7 @@ from reminder.domain.document.constant import (
     FREE_PLAN_MONTHLY_MAX_DOCUMENT_NUM,
     PRO_PLAN_MONTHLY_MAX_DOCUMENT_NUM,
     FREE_PLAN_CURRENT_MAX_DOCUMENT_NUM,
-    PRO_PLAN_CURRENT_MAX_DOCUMENT_NUM
+    PRO_PLAN_CURRENT_MAX_DOCUMENT_NUM,
 )
 
 
@@ -30,6 +30,7 @@ class ProPlanCurrentSubscriptionDocumentUploadLimitExceedError(BaseCustomExcepti
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Pro 플랜은 한달에 최대 {PRO_PLAN_MONTHLY_MAX_DOCUMENT_NUM}개의 문서를 업로드 할 수 있습니다.",
         )
+
 
 class FreePlanAnytimeDocumentUploadLimitExceedError(BaseCustomException):
     def __init__(self):

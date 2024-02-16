@@ -51,7 +51,7 @@ class DocumentRepository:
         )
         result = await session.execute(query)
         return result.scalars().fetchall()
-    
+
     async def delete_by_member_id_and_id(self, session: AsyncSession, member_id: str, document_id: int) -> None:
         document = await self.find_by_id(session, member_id, document_id)
         if document is None:

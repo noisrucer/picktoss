@@ -27,7 +27,7 @@ class CategoryRepository:
         query = select(Category).where(and_(Category.id == category_id, Category.member_id == member_id))
         result = await session.execute(query)
         return result.scalars().first()
-    
+
     async def find_or_none_by_name(self, session: AsyncSession, member_id: str, name: str) -> Category | None:
         query = select(Category).where(and_(Category.name == name, Category.member_id == member_id))
         result = await session.execute(query)

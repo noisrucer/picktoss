@@ -11,4 +11,3 @@ class CategoryNotFoundError(BaseCustomException):
 class DuplicateCategoryNameError(BaseCustomException):
     def __init__(self, name: str):
         super().__init__(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Category with name {name} already exists")
-

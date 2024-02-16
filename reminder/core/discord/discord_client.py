@@ -23,7 +23,7 @@ class DiscordClient:
         self.base_url = base_url
         self.url = base_url + f"/channels/{channel_id}/messages"
         self.headers = {"Authorization": f"Bot {bot_token}"}
-    
+
     def report_llm_error(
         self,
         task: str,
@@ -31,7 +31,7 @@ class DiscordClient:
         document_content: str,
         error_message: str,
         info: str = "",
-        llm_response: str = ""
+        llm_response: str = "",
     ):
         """Report LLM Error
 
@@ -48,39 +48,24 @@ class DiscordClient:
 
         content = f"# Task: {task}\n## Error Type: {error_type.value}\n* KST: `{korea_now}`\n* UTC: `{utc_now}`\n{info}"
         embeds = [
-            {
-                "title": "Document Content",
-                "description": document_content
-            },
-            {
-                "title": "Error Message",
-                "description": error_message
-            }
+            {"title": "Document Content", "description": document_content},
+            {"title": "Error Message", "description": error_message},
         ]
 
         if error_type == LLMErrorType.INVALID_JSON_FORMAT:
-            embeds.insert(1, {
-                "title": "LLM Response",
-                "description": llm_response
-            },)
+            embeds.insert(
+                1,
+                {"title": "LLM Response", "description": llm_response},
+            )
 
-        body = {
-            "content": content,
-            "tts": False,
-            "embeds": embeds
-        }
+        body = {"content": content, "tts": False, "embeds": embeds}
 
-        response = requests.post(
-            url=self.url,
-            json=body,
-            headers=self.headers
-        )
+        response = requests.post(url=self.url, json=body, headers=self.headers)
 
         try:
             response.raise_for_status()
         except HTTPError as e:
             pass
-
 
 
 discord_client = DiscordClient(

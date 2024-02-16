@@ -20,6 +20,7 @@ from reminder.domain.subscription.model import Subscription
 from reminder.config import load_config
 from reminder.domain.feedback.controller import router as feedback_router
 from reminder.domain.payment.controller import router as payment_router
+
 cfg = load_config()
 
 

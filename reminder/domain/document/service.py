@@ -13,7 +13,7 @@ from reminder.domain.document.constant import (
     FREE_PLAN_MONTHLY_MAX_DOCUMENT_NUM,
     PRO_PLAN_MONTHLY_MAX_DOCUMENT_NUM,
     FREE_PLAN_CURRENT_MAX_DOCUMENT_NUM,
-    PRO_PLAN_CURRENT_MAX_DOCUMENT_NUM
+    PRO_PLAN_CURRENT_MAX_DOCUMENT_NUM,
 )
 from reminder.domain.document.entity import EDocument
 from reminder.domain.document.exception import (
@@ -23,7 +23,7 @@ from reminder.domain.document.exception import (
     FreePlanCurrentSubscriptionDocumentUploadLimitExceedError,
     ProPlanCurrentSubscriptionDocumentUploadLimitExceedError,
     FreePlanAnytimeDocumentUploadLimitExceedError,
-    ProPlanAnytimeDocumentUploadLimitExceedError
+    ProPlanAnytimeDocumentUploadLimitExceedError,
 )
 from reminder.domain.document.model import Document, DocumentUpload
 from reminder.domain.document.repository import (
@@ -78,7 +78,9 @@ class DocumentService:
         )
 
         # 현재 시점에 업로드된 문서 개수: (제한 - Free: 3개, Pro: 15개)
-        current_num_uploaded_documents: int = await self.get_num_current_uploaded_documents_by_member_id(session, member_id)
+        current_num_uploaded_documents: int = await self.get_num_current_uploaded_documents_by_member_id(
+            session, member_id
+        )
 
         # 현재 구독 사이클에 업로드한 문서 개수: (제한 - Free: 15개, Pro: 40개)
         current_subscription_num_uploaded_documents: int = (
@@ -88,14 +90,14 @@ class DocumentService:
 
         assert isinstance(plan_type, SubscriptionPlanType)
         if plan_type == SubscriptionPlanType.FREE:
-            if current_subscription_num_uploaded_documents >= FREE_PLAN_MONTHLY_MAX_DOCUMENT_NUM: # 15개
+            if current_subscription_num_uploaded_documents >= FREE_PLAN_MONTHLY_MAX_DOCUMENT_NUM:  # 15개
                 raise FreePlanCurrentSubscriptionDocumentUploadLimitExceedError()
-            if current_num_uploaded_documents >= FREE_PLAN_CURRENT_MAX_DOCUMENT_NUM: # 매 시점: 3개
+            if current_num_uploaded_documents >= FREE_PLAN_CURRENT_MAX_DOCUMENT_NUM:  # 매 시점: 3개
                 raise FreePlanAnytimeDocumentUploadLimitExceedError()
         elif plan_type == SubscriptionPlanType.PRO:
-            if current_subscription_num_uploaded_documents >= PRO_PLAN_MONTHLY_MAX_DOCUMENT_NUM: # 40개
+            if current_subscription_num_uploaded_documents >= PRO_PLAN_MONTHLY_MAX_DOCUMENT_NUM:  # 40개
                 raise ProPlanCurrentSubscriptionDocumentUploadLimitExceedError()
-            if current_num_uploaded_documents >= PRO_PLAN_CURRENT_MAX_DOCUMENT_NUM: # 매 시점: 15개
+            if current_num_uploaded_documents >= PRO_PLAN_CURRENT_MAX_DOCUMENT_NUM:  # 매 시점: 15개
                 raise ProPlanAnytimeDocumentUploadLimitExceedError()
         else:
             raise ValueError("Invalid Plan Type")
@@ -103,7 +105,7 @@ class DocumentService:
         # Ensure document max size limit (15,000 characters)
         if len(edocument.decode_contenet_str()) > DOCUMENT_MAX_LEN:
             raise DocumentMaxLengthExceedError()
-        
+
         if len(edocument.decode_contenet_str()) < DOCUMENT_MIN_LEN:
             raise DocumentMinLengthError()
 
@@ -174,7 +176,7 @@ class DocumentService:
             ],
             content=content,
         )
-    
+
     async def delete_document_by_id(self, session: AsyncSession, member_id: str, document_id: int) -> None:
         await self.document_repository.delete_by_member_id_and_id(session, member_id, document_id)
 
@@ -196,11 +198,8 @@ class DocumentService:
         ]
 
         return len(current_subscription_document_uploads)
-    
-    async def get_num_current_uploaded_documents_by_member_id(
-        self, session: AsyncSession, member_id: str
-    ) -> int:
-        """현재 업로드된 문서 개수
-        """
+
+    async def get_num_current_uploaded_documents_by_member_id(self, session: AsyncSession, member_id: str) -> int:
+        """현재 업로드된 문서 개수"""
         documents = await self.document_repository.find_all_by_member_id(session, member_id)
         return len(documents)

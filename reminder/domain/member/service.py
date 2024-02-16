@@ -6,7 +6,10 @@ from jose import ExpiredSignatureError, jwt
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from reminder.config import load_config
-from reminder.domain.document.constant import get_current_subscription_max_document_num_by_subscription_plan, get_anytime_max_document_num_by_subscription_plan
+from reminder.domain.document.constant import (
+    get_current_subscription_max_document_num_by_subscription_plan,
+    get_anytime_max_document_num_by_subscription_plan,
+)
 from reminder.domain.document.service import DocumentService
 from reminder.domain.member.entity import EMember
 from reminder.domain.member.exceptions import InvalidTokenScopeError, JWTError
@@ -16,13 +19,18 @@ from reminder.domain.member.response.get_member_info_response import (
     GetMemberInfoDocumentDto,
     GetMemberInfoResponse,
     GetMemberInfoSubScriptionDto,
-    GetMemberInfoQuizDto
+    GetMemberInfoQuizDto,
 )
 from reminder.domain.subscription.enum import SubscriptionPlanType
 from reminder.domain.subscription.model import Subscription
 from reminder.domain.subscription.repository import SubscriptionRepository
 from reminder.domain.subscription.service import SubscriptionService
-from reminder.domain.document.constant import FREE_PLAN_CURRENT_MAX_DOCUMENT_NUM, FREE_PLAN_MONTHLY_MAX_DOCUMENT_NUM, PRO_PLAN_CURRENT_MAX_DOCUMENT_NUM, PRO_PLAN_MONTHLY_MAX_DOCUMENT_NUM
+from reminder.domain.document.constant import (
+    FREE_PLAN_CURRENT_MAX_DOCUMENT_NUM,
+    FREE_PLAN_MONTHLY_MAX_DOCUMENT_NUM,
+    PRO_PLAN_CURRENT_MAX_DOCUMENT_NUM,
+    PRO_PLAN_MONTHLY_MAX_DOCUMENT_NUM,
+)
 from reminder.domain.question.constant import FREE_PLAN_QUIZ_QUESTION_NUM, PRO_PLAN_QUIZ_QUESTION_NUM
 
 cfg = load_config()
@@ -34,7 +42,7 @@ class MemberService:
         member_repository: MemberRepository,
         subscription_repository: SubscriptionRepository,
         subscription_service: SubscriptionService,
-        document_service: DocumentService
+        document_service: DocumentService,
     ):
         self.member_repository = member_repository
         self.subscription_repository = subscription_repository
@@ -92,7 +100,9 @@ class MemberService:
                 session, member_id
             )
         )
-        current_uploaded_document_num = await self.document_service.get_num_current_uploaded_documents_by_member_id(session, member_id)
+        current_uploaded_document_num = await self.document_service.get_num_current_uploaded_documents_by_member_id(
+            session, member_id
+        )
         member = await self.member_repository.get_member_by_id(session, member_id)
 
         return GetMemberInfoResponse(
@@ -108,12 +118,11 @@ class MemberService:
                 freePlanMaxPossessDocumentNum=FREE_PLAN_CURRENT_MAX_DOCUMENT_NUM,
                 freePlanSubscriptionMaxUploadDocumentNum=FREE_PLAN_MONTHLY_MAX_DOCUMENT_NUM,
                 proPlanMaxPossessDocumentNum=PRO_PLAN_CURRENT_MAX_DOCUMENT_NUM,
-                proPlanSubscriptionMaxUploadDocumentNum=PRO_PLAN_MONTHLY_MAX_DOCUMENT_NUM
+                proPlanSubscriptionMaxUploadDocumentNum=PRO_PLAN_MONTHLY_MAX_DOCUMENT_NUM,
             ),
             quiz=GetMemberInfoQuizDto(
-                freePlanQuizQuestionNum=FREE_PLAN_QUIZ_QUESTION_NUM,
-                proPlanQuizQuestionNum=PRO_PLAN_QUIZ_QUESTION_NUM
-            )
+                freePlanQuizQuestionNum=FREE_PLAN_QUIZ_QUESTION_NUM, proPlanQuizQuestionNum=PRO_PLAN_QUIZ_QUESTION_NUM
+            ),
         )
 
     def create_access_token(self, sub: str | int):

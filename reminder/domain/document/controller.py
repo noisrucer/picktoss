@@ -39,7 +39,11 @@ async def upload_document(
     return await document_service.upload_document(session=session, member_id=member_id, edocument=edocument)
 
 
-@router.get("/categories/{category_id}/documents", status_code=status.HTTP_200_OK, response_model=GetAllDocumentsByCategoryResponse)
+@router.get(
+    "/categories/{category_id}/documents",
+    status_code=status.HTTP_200_OK,
+    response_model=GetAllDocumentsByCategoryResponse,
+)
 async def get_all_documents_by_category(
     category_id: int, session: DBSessionDep, member_id: str = Depends(get_current_member_id)
 ):
