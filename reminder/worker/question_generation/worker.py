@@ -53,7 +53,7 @@ def handler(event, context):
     prev_questions: list[str] = []
     for chunk in chunks:
         prev_question_str = '\n'.join([q for q in prev_questions])
-        messages = fill_message_placeholders(messages=without_placeholder_messages, placeholders={"note": chunk})
+        messages = fill_message_placeholders(messages=without_placeholder_messages, placeholders={"note": chunk, "prev_questions": prev_question_str})
         try:
             resp_dict = chat_llm.predict_json(messages)
         except InvalidLLMJsonResponseError as e:
