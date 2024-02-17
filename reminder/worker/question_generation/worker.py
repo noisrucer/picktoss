@@ -35,7 +35,7 @@ def handler(event, context):
 
     # Generate Questions
 
-    CHUNK_SIZE = 1300
+    CHUNK_SIZE = 1050
     chunks: list[str] = []
     for i in range(0, len(content), CHUNK_SIZE):
         chunks.append(content[i : i + CHUNK_SIZE])
@@ -49,15 +49,11 @@ def handler(event, context):
     success_at_least_once = False
     failed_at_least_once = False
 
-    # TODO: UNDO
-    # current_question_num = 0
-    # max_flag = False
 
+    prev_questions: list[str] = []
     for chunk in chunks:
-        # TODO: UNDO
-        # if current_question_num == 5:
-        #     break
-        messages = fill_message_placeholders(messages=without_placeholder_messages, placeholders={"note": chunk})
+        prev_question_str = '\n'.join([q for q in prev_questions])
+        messages = fill_message_placeholders(messages=without_placeholder_messages, placeholders={"note": chunk, "prev_questions": prev_question_str})
         try:
             resp_dict = chat_llm.predict_json(messages)
         except InvalidLLMJsonResponseError as e:
@@ -84,11 +80,13 @@ def handler(event, context):
 
         try:
             for q_set in resp_dict:
-                # TODO: UNDO
-                # if current_question_num == 5:
-                #     break
-
                 question, answer = q_set["question"], q_set["answer"]
+
+                # To avoid duplication
+                prev_questions.append(question)
+                if len(prev_questions) == 6:
+                    prev_questions.pop(0)
+
                 total_generated_question_count += 1
 
                 if subscription_plan == SubscriptionPlanType.FREE.value:
