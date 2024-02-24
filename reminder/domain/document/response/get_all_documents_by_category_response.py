@@ -2,10 +2,13 @@ from datetime import datetime
 
 from pydantic import BaseModel, Field
 
+from reminder.domain.document.enum import DocumentStatus
+
 
 class DocumentResponseDto(BaseModel):
     id: int = Field(..., examples=[1])
     documentName: str = Field(..., examples=["네트워크 DNS의 기본 동작"])
+    status: DocumentStatus = Field(..., examples=[DocumentStatus.UNPROCESSED])
     summary: str | None = Field(
         None,
         examples=[

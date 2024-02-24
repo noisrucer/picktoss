@@ -50,6 +50,7 @@ class QuestionService:
                 DocumentResponseDto(
                     id=doc.id,
                     documentName=doc.name,
+                    status=doc.status,
                     summary=doc.summary,
                     createdAt=doc.created_at,
                     questions=[

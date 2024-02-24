@@ -146,7 +146,7 @@ class DocumentService:
         return GetAllDocumentsByCategoryResponse(
             documents=[
                 DocumentResponseDto(
-                    id=document.id, documentName=document.name, summary=document.summary, createdAt=document.created_at
+                    id=document.id, documentName=document.name, status=document.status, summary=document.summary, createdAt=document.created_at,
                 )
                 for document in documents
             ]

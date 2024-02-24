@@ -36,6 +36,7 @@ def oauth_url_api():
     return {
         "oauth_url": f"https://accounts.google.com/o/oauth2/auth?client_id={cfg.oauth.client_id}&response_type=code&redirect_uri={cfg.oauth.redirect_uri}&scope=openid%20email%20profile"
     }
+    # return RedirectResponse(f"https://accounts.google.com/o/oauth2/auth?client_id={cfg.oauth.client_id}&response_type=code&redirect_uri={cfg.oauth.redirect_uri}&scope=openid%20email%20profile")
 
 
 @router.get("/callback")
