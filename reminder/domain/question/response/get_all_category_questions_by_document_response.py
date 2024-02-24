@@ -2,6 +2,7 @@ from datetime import datetime
 
 from pydantic import BaseModel, Field
 
+from reminder.domain.document.enum import DocumentStatus
 
 class QuestionResponseDto(BaseModel):
     id: int = Field(..., examples=[10])
@@ -12,6 +13,7 @@ class QuestionResponseDto(BaseModel):
 class DocumentResponseDto(BaseModel):
     id: int = Field(..., examples=[1])
     documentName: str = Field(..., examples=["네트워크 DNS 동작과 원리"])
+    status: DocumentStatus = Field(..., examples=[DocumentStatus.UNPROCESSED])
     summary: str | None = Field(
         None,
         examples=[
