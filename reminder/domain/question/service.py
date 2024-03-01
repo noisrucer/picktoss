@@ -53,7 +53,8 @@ class QuestionService:
                     documentName=doc.name,
                     status= DocumentStatus.PROCESSED 
                     if doc.status == DocumentStatus.PARTIAL_SUCCESS 
-                    or doc.status == DocumentStatus.PROCESSED 
+                    or doc.status == DocumentStatus.PROCESSED
+                    or doc.status == DocumentStatus.COMPLETELY_FAILED
                     else DocumentStatus.UNPROCESSED,
                     summary=doc.summary,
                     createdAt=doc.created_at,

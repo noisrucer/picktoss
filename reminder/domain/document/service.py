@@ -151,7 +151,8 @@ class DocumentService:
                     documentName=document.name,
                     status= DocumentStatus.PROCESSED 
                     if document.status == DocumentStatus.PARTIAL_SUCCESS 
-                    or document.status == DocumentStatus.PROCESSED 
+                    or document.status == DocumentStatus.PROCESSED
+                    or document.status == DocumentStatus.COMPLETELY_FAILED
                     else DocumentStatus.UNPROCESSED,
                     summary=document.summary,
                     createdAt=document.created_at,
