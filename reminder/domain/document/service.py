@@ -16,6 +16,7 @@ from reminder.domain.document.constant import (
     PRO_PLAN_CURRENT_MAX_DOCUMENT_NUM,
 )
 from reminder.domain.document.entity import EDocument
+from reminder.domain.document.enum import DocumentStatus
 from reminder.domain.document.exception import (
     DocumentMaxLengthExceedError,
     DocumentMinLengthError,
@@ -146,7 +147,15 @@ class DocumentService:
         return GetAllDocumentsByCategoryResponse(
             documents=[
                 DocumentResponseDto(
-                    id=document.id, documentName=document.name, summary=document.summary, createdAt=document.created_at
+                    id=document.id,
+                    documentName=document.name,
+                    status= DocumentStatus.PROCESSED 
+                    if document.status == DocumentStatus.PARTIAL_SUCCESS 
+                    or document.status == DocumentStatus.PROCESSED
+                    or document.status == DocumentStatus.COMPLETELY_FAILED
+                    else DocumentStatus.UNPROCESSED,
+                    summary=document.summary,
+                    createdAt=document.created_at,
                 )
                 for document in documents
             ]

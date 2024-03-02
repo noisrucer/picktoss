@@ -35,7 +35,7 @@ def handler(event, context):
 
     # Generate Questions
 
-    CHUNK_SIZE = 1050
+    CHUNK_SIZE = 1100
     chunks: list[str] = []
     for i in range(0, len(content), CHUNK_SIZE):
         chunks.append(content[i : i + CHUNK_SIZE])

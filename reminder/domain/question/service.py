@@ -7,6 +7,7 @@ from reminder.domain.category.model import Category
 from reminder.domain.category.repository import CategoryRepository
 from reminder.domain.document.model import Document
 from reminder.domain.document.repository import DocumentRepository
+from reminder.domain.document.enum import DocumentStatus
 from reminder.domain.question.exception import QuestionSetNotFoundError
 from reminder.domain.question.model import Question, QuestionQuestionSet, QuestionSet
 from reminder.domain.question.repository import QuestionSetRepository
@@ -50,6 +51,11 @@ class QuestionService:
                 DocumentResponseDto(
                     id=doc.id,
                     documentName=doc.name,
+                    status= DocumentStatus.PROCESSED 
+                    if doc.status == DocumentStatus.PARTIAL_SUCCESS 
+                    or doc.status == DocumentStatus.PROCESSED
+                    or doc.status == DocumentStatus.COMPLETELY_FAILED
+                    else DocumentStatus.UNPROCESSED,
                     summary=doc.summary,
                     createdAt=doc.created_at,
                     questions=[
